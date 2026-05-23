@@ -1,0 +1,14 @@
+# Apache rewrite rules to enable Clean URL structure
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    
+    # Do not rewrite if requested target is a real file or directory
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    
+    # Redirect all other requests to index.php
+    RewriteRule ^(.*)$ index.php [L,QSA]
+</IfModule>
+
+# Disable Directory Browsing
+Options -Indexes

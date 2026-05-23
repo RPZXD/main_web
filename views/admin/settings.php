@@ -1,0 +1,427 @@
+<!-- views/admin/settings.php -->
+<!-- Administrative Website Settings Control Panel View -->
+
+<!DOCTYPE html>
+<html lang="th" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><?php echo $title; ?></title>
+    
+    <!-- Tailwind CSS & FontAwesome -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Sarabun', 'sans-serif'],
+                        english: ['Outfit', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="<?php echo ASSETS_URL; ?>css/style.css">
+
+    <!-- Immediate Theme Init Script to prevent screen flashing -->
+    <script>
+        (function() {
+            const savedTheme = localStorage.getItem('school_theme') || 'dark';
+            if (savedTheme === 'dark') {
+                document.documentElement.classList.add('dark');
+            } else {
+                document.documentElement.classList.remove('dark');
+            }
+        })();
+    </script>
+</head>
+<body class="bg-gradient-mesh min-h-screen text-slate-800 dark:text-slate-100 font-sans flex flex-col transition-colors duration-300">
+
+    <!-- Admin Top Navbar -->
+    <nav class="sticky top-0 z-50 glass-nav shadow-lg">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-20">
+                <!-- Branding -->
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-500 to-purple-600 flex items-center justify-center border border-indigo-400/20 shadow-md">
+                        <span class="text-white font-english font-black text-sm"><?php echo SCHOOL_SHORT_NAME; ?></span>
+                    </div>
+                    <div class="flex flex-col">
+                        <span class="text-sm font-bold text-slate-900 dark:text-white tracking-wide leading-tight">ระบบตั้งค่าเว็บไซต์</span>
+                        <span class="text-[9px] text-slate-500 dark:text-slate-400 font-english mt-0.5"><?php echo SCHOOL_NAME_EN; ?></span>
+                    </div>
+                </div>
+
+                <!-- Navigation Portal links -->
+                <div class="flex items-center gap-3">
+                    <a href="<?php echo BASE_URL; ?>admin" class="px-4 py-2 bg-indigo-600/10 hover:bg-indigo-600/20 border border-indigo-500/20 rounded-xl text-xs font-semibold text-indigo-600 dark:text-indigo-300 transition-all duration-300">
+                        <i class="fa-solid fa-gauge mr-1.5"></i>กลับสู่หน้าแดชบอร์ด
+                    </a>
+                    
+                    <a href="<?php echo BASE_URL; ?>" target="_blank" class="px-4 py-2 hover:bg-slate-100 dark:hover:bg-white/5 border border-slate-300 dark:border-white/10 hover:border-slate-400 dark:hover:border-white/20 rounded-xl text-xs font-semibold text-slate-700 dark:text-white transition-all duration-300">
+                        <i class="fa-solid fa-globe mr-1.5"></i>ดูหน้าเว็บหลัก
+                    </a>
+                    
+                    <!-- Dark/Light Theme Switcher Button -->
+                    <button onclick="toggleDarkMode()" class="p-2.5 hover:bg-slate-100 dark:hover:bg-white/5 border border-slate-300 dark:border-white/10 rounded-xl text-xs font-semibold text-slate-700 dark:text-white transition-all duration-300 flex items-center justify-center" title="สลับโหมด สีสว่าง/สีมืด">
+                        <i id="theme-icon" class="fa-solid fa-moon"></i>
+                    </button>
+                    
+                    <span class="text-xs text-slate-400 dark:text-slate-600 font-english">|</span>
+                    
+                    <div class="flex items-center gap-2">
+                        <span class="text-xs text-slate-700 dark:text-slate-300 font-semibold bg-slate-100 dark:bg-white/5 border border-slate-300 dark:border-white/10 px-3 py-1.5 rounded-xl">
+                            <i class="fa-solid fa-user text-indigo-500 dark:text-indigo-400 mr-1.5"></i><?php echo htmlspecialchars($_SESSION['fullname']); ?>
+                        </span>
+                        <a href="<?php echo BASE_URL; ?>logout" class="px-4 py-2 bg-red-600/10 dark:bg-red-600/20 border border-red-500/20 dark:border-red-500/30 text-red-600 dark:text-red-300 hover:bg-red-600/20 dark:hover:bg-red-600/30 rounded-xl text-xs font-semibold transition-all duration-300">
+                            <i class="fa-solid fa-sign-out-alt mr-1.5"></i>ออกจากระบบ
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Container -->
+    <main class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10 flex-grow w-full space-y-8 animate-fade-in-up">
+        
+        <!-- Headers Section -->
+        <div>
+            <h1 class="text-2xl font-bold text-slate-900 dark:text-white">จัดการการตั้งค่าพื้นฐานของเว็บไซต์ (Site Settings)</h1>
+            <p class="text-slate-500 dark:text-slate-400 text-xs mt-1">คุณสามารถแก้ไข ข้อมูลติดต่อ ลิงก์โซเชียล โลโก้ และแผนที่ของโรงเรียน เพื่ออัปเดตข้อมูลที่จะแสดงบนหน้าหลักและฟุตเตอร์ได้ทันที</p>
+        </div>
+
+        <!-- Alerts Display (Success/Error) -->
+        <?php if (isset($_SESSION['success'])): ?>
+            <div class="p-4 bg-emerald-500/10 dark:bg-emerald-900/30 border border-emerald-500/20 dark:border-emerald-500/30 rounded-2xl text-emerald-600 dark:text-emerald-300 text-xs flex items-center gap-2.5 shadow-xl">
+                <i class="fa-solid fa-circle-check text-base"></i>
+                <span class="font-semibold"><?php echo $_SESSION['success']; ?></span>
+            </div>
+            <?php unset($_SESSION['success']); ?>
+        <?php endif; ?>
+
+        <?php if (isset($_SESSION['error'])): ?>
+            <div class="p-4 bg-red-500/10 dark:bg-red-900/30 border border-red-500/20 dark:border-red-500/30 rounded-2xl text-red-600 dark:text-red-300 text-xs flex items-center gap-2.5 shadow-xl">
+                <i class="fa-solid fa-circle-exclamation text-base"></i>
+                <span class="font-semibold"><?php echo $_SESSION['error']; ?></span>
+            </div>
+            <?php unset($_SESSION['error']); ?>
+        <?php endif; ?>
+
+        <!-- Form and Tab Layout -->
+        <form action="<?php echo BASE_URL; ?>admin/settings/update" method="POST" enctype="multipart/form-data" class="space-y-6">
+            
+            <!-- Category Tabs Menu -->
+            <div class="flex overflow-x-auto bg-slate-200/80 dark:bg-slate-900/60 border border-slate-300 dark:border-white/10 p-1 rounded-2xl w-full scrollbar-none">
+                <button type="button" onclick="switchSettingTab('general')" id="tab-btn-general" class="setting-tab-btn flex-1 py-3 text-xs font-bold rounded-xl transition-all duration-300 flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-circle-info"></i> ข้อมูลทั่วไป
+                </button>
+                <button type="button" onclick="switchSettingTab('contact')" id="tab-btn-contact" class="setting-tab-btn flex-1 py-3 text-xs font-bold rounded-xl transition-all duration-300 flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-address-book"></i> ข้อมูลติดต่อ
+                </button>
+                <button type="button" onclick="switchSettingTab('social')" id="tab-btn-social" class="setting-tab-btn flex-1 py-3 text-xs font-bold rounded-xl transition-all duration-300 flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-share-nodes"></i> โซเชียลมีเดีย
+                </button>
+                <button type="button" onclick="switchSettingTab('assets')" id="tab-btn-assets" class="setting-tab-btn flex-1 py-3 text-xs font-bold rounded-xl transition-all duration-300 flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-image"></i> โลโก้ & Favicon
+                </button>
+                <button type="button" onclick="switchSettingTab('exec_stats')" id="tab-btn-exec_stats" class="setting-tab-btn flex-1 py-3 text-xs font-bold rounded-xl transition-all duration-300 flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-user-tie"></i> สารจากผู้บริหาร & สถิติ
+                </button>
+            </div>
+
+            <!-- Content Card -->
+            <div class="glass-card p-8 rounded-3xl shadow-2xl relative overflow-hidden">
+
+                <!-- Tab 1: General Info -->
+                <div id="setting-panel-general" class="setting-panel-pane space-y-6 hidden">
+                    <h3 class="text-md font-bold text-slate-900 dark:text-white pb-3 border-b border-slate-200 dark:border-white/5"><i class="fa-solid fa-circle-info text-indigo-500 mr-1.5"></i>ตั้งค่าข้อมูลทั่วไปของสถานศึกษา</h3>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="space-y-1.5">
+                            <label class="text-xs font-semibold text-slate-700 dark:text-slate-300">ชื่อโรงเรียน (ภาษาไทย)</label>
+                            <input type="text" name="school_name" value="<?php echo htmlspecialchars($settings['school_name'] ?? ''); ?>" required class="w-full glass-input rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all">
+                        </div>
+                        <div class="space-y-1.5">
+                            <label class="text-xs font-semibold text-slate-700 dark:text-slate-300">ชื่อโรงเรียน (ภาษาอังกฤษ)</label>
+                            <input type="text" name="school_name_en" value="<?php echo htmlspecialchars($settings['school_name_en'] ?? ''); ?>" required class="w-full glass-input rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all">
+                        </div>
+                        <div class="space-y-1.5 md:col-span-2">
+                            <label class="text-xs font-semibold text-slate-700 dark:text-slate-300">ชื่อย่อโรงเรียน (ภาษาไทย เช่น พช.)</label>
+                            <input type="text" name="school_short_name" value="<?php echo htmlspecialchars($settings['school_short_name'] ?? ''); ?>" required class="w-full glass-input rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tab 2: Contact Info -->
+                <div id="setting-panel-contact" class="setting-panel-pane space-y-6 hidden">
+                    <h3 class="text-md font-bold text-slate-900 dark:text-white pb-3 border-b border-slate-200 dark:border-white/5"><i class="fa-solid fa-address-book text-indigo-500 mr-1.5"></i>ตั้งค่าข้อมูลติดต่อและลิงก์แผนที่</h3>
+                    
+                    <div class="space-y-6">
+                        <div class="space-y-1.5">
+                            <label class="text-xs font-semibold text-slate-700 dark:text-slate-300">ที่อยู่โรงเรียน (ภาษาไทย)</label>
+                            <textarea name="school_address_th" rows="2" required class="w-full glass-input rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all"><?php echo htmlspecialchars($settings['school_address_th'] ?? ''); ?></textarea>
+                        </div>
+                        <div class="space-y-1.5">
+                            <label class="text-xs font-semibold text-slate-700 dark:text-slate-300">ที่อยู่โรงเรียน (ภาษาอังกฤษ)</label>
+                            <textarea name="school_address_en" rows="2" required class="w-full glass-input rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all"><?php echo htmlspecialchars($settings['school_address_en'] ?? ''); ?></textarea>
+                        </div>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                            <div class="space-y-1.5">
+                                <label class="text-xs font-semibold text-slate-700 dark:text-slate-300">เบอร์โทรศัพท์ติดต่อ</label>
+                                <input type="text" name="school_phone" value="<?php echo htmlspecialchars($settings['school_phone'] ?? ''); ?>" required class="w-full glass-input rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all">
+                            </div>
+                            <div class="space-y-1.5">
+                                <label class="text-xs font-semibold text-slate-700 dark:text-slate-300">เบอร์โทรสาร (แฟกซ์)</label>
+                                <input type="text" name="school_fax" value="<?php echo htmlspecialchars($settings['school_fax'] ?? ''); ?>" class="w-full glass-input rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all">
+                            </div>
+                            <div class="space-y-1.5">
+                                <label class="text-xs font-semibold text-slate-700 dark:text-slate-300">อีเมลโรงเรียน</label>
+                                <input type="email" name="school_email" value="<?php echo htmlspecialchars($settings['school_email'] ?? ''); ?>" required class="w-full glass-input rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all">
+                            </div>
+                        </div>
+
+                        <div class="space-y-1.5">
+                            <label class="text-xs font-semibold text-slate-700 dark:text-slate-300">ลิงก์ Google Map Embed (สำหรับแผนที่หน้าติดต่อเรา)</label>
+                            <input type="url" name="google_map_embed" value="<?php echo htmlspecialchars($settings['google_map_embed'] ?? ''); ?>" required class="w-full glass-input rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all" placeholder="https://www.google.com/maps/embed?...">
+                            <p class="text-[10px] text-slate-400 dark:text-slate-500">นำลิงก์มาจากตัวเลือกแชร์แผนที่ -> ฝังแผนที่ (Embed Map) คัดลอกเฉพาะลิงก์ที่อยู่ในแท็ก `src` ของ iframe มากรอก</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tab 3: Social Links -->
+                <div id="setting-panel-social" class="setting-panel-pane space-y-6 hidden">
+                    <h3 class="text-md font-bold text-slate-900 dark:text-white pb-3 border-b border-slate-200 dark:border-white/5"><i class="fa-solid fa-share-nodes text-indigo-500 mr-1.5"></i>ตั้งค่าลิงก์เชื่อมโยงโซเชียลมีเดีย</h3>
+                    
+                    <div class="space-y-5">
+                        <div class="space-y-1.5">
+                            <label class="text-xs font-semibold text-slate-700 dark:text-slate-300"><i class="fab fa-facebook text-indigo-500 mr-1 text-sm"></i> Facebook Page URL</label>
+                            <input type="url" name="school_facebook" value="<?php echo htmlspecialchars($settings['school_facebook'] ?? ''); ?>" class="w-full glass-input rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-indigo-500 transition-all">
+                        </div>
+                        <div class="space-y-1.5">
+                            <label class="text-xs font-semibold text-slate-700 dark:text-slate-300"><i class="fab fa-youtube text-red-500 mr-1 text-sm"></i> YouTube Channel URL</label>
+                            <input type="url" name="school_youtube" value="<?php echo htmlspecialchars($settings['school_youtube'] ?? ''); ?>" class="w-full glass-input rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-indigo-500 transition-all">
+                        </div>
+                        <div class="space-y-1.5">
+                            <label class="text-xs font-semibold text-slate-700 dark:text-slate-300"><i class="fab fa-line text-green-500 mr-1 text-sm"></i> Line Official Account URL</label>
+                            <input type="url" name="school_line" value="<?php echo htmlspecialchars($settings['school_line'] ?? ''); ?>" class="w-full glass-input rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-indigo-500 transition-all">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tab 4: Assets Upload -->
+                <div id="setting-panel-assets" class="setting-panel-pane space-y-6 hidden">
+                    <h3 class="text-md font-bold text-slate-900 dark:text-white pb-3 border-b border-slate-200 dark:border-white/5"><i class="fa-solid fa-image text-indigo-500 mr-1.5"></i>ตั้งค่ารูปโลโก้โรงเรียนและ Favicon ไอคอนแท็บ</h3>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <!-- School Logo Upload -->
+                        <div class="space-y-4">
+                            <label class="text-xs font-semibold text-slate-700 dark:text-slate-300 block">โลโก้สถาบัน (School Logo)</label>
+                            <div class="p-4 border border-dashed border-slate-300 dark:border-white/10 rounded-2xl flex flex-col items-center justify-center text-center space-y-3 bg-slate-50/50 dark:bg-slate-950/20">
+                                <?php if (!empty($settings['school_logo'])): ?>
+                                    <img src="<?php echo UPLOAD_URL . $settings['school_logo']; ?>" alt="Logo Preview" class="w-20 h-20 object-cover rounded-xl border border-slate-200 dark:border-white/10 shadow-lg">
+                                <?php else: ?>
+                                    <span class="w-20 h-20 rounded-xl bg-slate-200 dark:bg-slate-800 flex items-center justify-center text-slate-400 dark:text-slate-600 text-3xl"><i class="fa-solid fa-image"></i></span>
+                                <?php endif; ?>
+                                <input type="file" name="school_logo" accept="image/*" class="w-full text-xs text-slate-500 dark:text-slate-400 file:mr-4 file:py-1.5 file:px-3.5 file:rounded-xl file:border-0 file:text-[11px] file:font-semibold file:bg-indigo-600/10 file:text-indigo-600 dark:file:bg-white/5 dark:file:text-white hover:file:bg-indigo-600/20 dark:hover:file:bg-white/10 cursor-pointer">
+                            </div>
+                            <p class="text-[9px] text-slate-400 dark:text-slate-500 leading-tight">รองรับไฟล์ภาพ .png, .jpg, .webp ขนาดไม่เกิน 5MB (แนะนำเป็นภาพพื้นหลังโปร่งใสแบบสี่เหลี่ยมจัตุรัส)</p>
+                        </div>
+
+                        <!-- Favicon Upload -->
+                        <div class="space-y-4">
+                            <label class="text-xs font-semibold text-slate-700 dark:text-slate-300 block">ไอคอนหน้าต่างเบราว์เซอร์ (Favicon)</label>
+                            <div class="p-4 border border-dashed border-slate-300 dark:border-white/10 rounded-2xl flex flex-col items-center justify-center text-center space-y-3 bg-slate-50/50 dark:bg-slate-950/20">
+                                <?php if (!empty($settings['school_favicon'])): ?>
+                                    <img src="<?php echo UPLOAD_URL . $settings['school_favicon']; ?>" alt="Favicon Preview" class="w-10 h-10 object-cover rounded-md border border-slate-200 dark:border-white/10 shadow-md">
+                                <?php else: ?>
+                                    <span class="w-10 h-10 rounded-md bg-slate-200 dark:bg-slate-800 flex items-center justify-center text-slate-400 dark:text-slate-600 text-xl"><i class="fa-solid fa-shapes"></i></span>
+                                <?php endif; ?>
+                                <input type="file" name="school_favicon" accept="image/x-icon, image/png, image/jpeg, image/gif" class="w-full text-xs text-slate-500 dark:text-slate-400 file:mr-4 file:py-1.5 file:px-3.5 file:rounded-xl file:border-0 file:text-[11px] file:font-semibold file:bg-indigo-600/10 file:text-indigo-600 dark:file:bg-white/5 dark:file:text-white hover:file:bg-indigo-600/20 dark:hover:file:bg-white/10 cursor-pointer">
+                            </div>
+                            <p class="text-[9px] text-slate-400 dark:text-slate-500 leading-tight">รองรับไฟล์ .ico, .png, .jpg ขนาดไม่เกิน 2MB (ขนาดมาตรฐานควรเป็น 16x16 หรือ 32x32 พิกเซล)</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tab 5: Executive Message & Stats -->
+                <div id="setting-panel-exec_stats" class="setting-panel-pane space-y-6 hidden">
+                    <h3 class="text-md font-bold text-slate-900 dark:text-white pb-3 border-b border-slate-200 dark:border-white/5"><i class="fa-solid fa-user-tie text-indigo-500 mr-1.5"></i>ตั้งค่าสารจากผู้บริหาร & สถิติสถานศึกษา</h3>
+                    
+                    <div class="space-y-6">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div class="space-y-1.5">
+                                <label class="text-xs font-semibold text-slate-700 dark:text-slate-300">ชื่อผู้บริหาร (ผู้อำนวยการ)</label>
+                                <input type="text" name="exec_name" value="<?php echo htmlspecialchars($settings['exec_name'] ?? ''); ?>" class="w-full glass-input rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all">
+                            </div>
+                            <div class="space-y-1.5">
+                                <label class="text-xs font-semibold text-slate-700 dark:text-slate-300">ตำแหน่งผู้บริหาร</label>
+                                <input type="text" name="exec_position" value="<?php echo htmlspecialchars($settings['exec_position'] ?? 'ผู้อำนวยการโรงเรียน'); ?>" class="w-full glass-input rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all">
+                            </div>
+                        </div>
+
+                        <div class="space-y-1.5">
+                            <label class="text-xs font-semibold text-slate-700 dark:text-slate-300">สารจากผู้บริหาร (ข้อความต้อนรับ / วิสัยทัศน์)</label>
+                            <textarea name="exec_message" rows="4" class="w-full glass-input rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all"><?php echo htmlspecialchars($settings['exec_message'] ?? ''); ?></textarea>
+                        </div>
+
+                        <div class="space-y-4">
+                            <label class="text-xs font-semibold text-slate-700 dark:text-slate-300 block">รูปภาพผู้บริหาร (Executive Photo)</label>
+                            <div class="p-4 border border-dashed border-slate-300 dark:border-white/10 rounded-2xl flex flex-col items-center justify-center text-center space-y-3 bg-slate-50/50 dark:bg-slate-950/20">
+                                <?php if (!empty($settings['exec_image'])): ?>
+                                    <img src="<?php echo UPLOAD_URL . $settings['exec_image']; ?>" alt="Executive Preview" class="w-32 h-40 object-cover rounded-xl border border-slate-200 dark:border-white/10 shadow-lg animate-fade-in">
+                                <?php else: ?>
+                                    <span class="w-32 h-40 rounded-xl bg-slate-200 dark:bg-slate-800 flex items-center justify-center text-slate-400 dark:text-slate-600 text-3xl"><i class="fa-solid fa-user"></i></span>
+                                <?php endif; ?>
+                                <input type="file" name="exec_image" accept="image/*" class="w-full text-xs text-slate-500 dark:text-slate-400 file:mr-4 file:py-1.5 file:px-3.5 file:rounded-xl file:border-0 file:text-[11px] file:font-semibold file:bg-indigo-600/10 file:text-indigo-600 dark:file:bg-white/5 dark:file:text-white hover:file:bg-indigo-600/20 dark:hover:file:bg-white/10 cursor-pointer">
+                            </div>
+                            <p class="text-[9px] text-slate-400 dark:text-slate-500 leading-tight">รองรับไฟล์ภาพ .png, .jpg, .webp ขนาดไม่เกิน 5MB (แนะนำรูปแนวตั้ง หรือรูปครึ่งตัวของผู้บริหาร)</p>
+                        </div>
+
+                        <hr class="border-slate-200 dark:border-white/5 my-4">
+
+                        <h4 class="text-sm font-bold text-slate-950 dark:text-white"><i class="fa-solid fa-chart-simple text-indigo-500 mr-1.5"></i>ข้อมูลสถิติสถานศึกษา (สี่สถิติบนแถบสีน้ำเงินหน้าหลัก)</h4>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <!-- Stat 1: Students -->
+                            <div class="p-4 bg-slate-100/50 dark:bg-slate-950/20 border border-slate-200 dark:border-white/5 rounded-2xl space-y-3">
+                                <span class="text-xs font-bold text-indigo-600 dark:text-indigo-400 flex items-center gap-1.5"><i class="fa-solid fa-user-graduate"></i> สถิติจำนวนนักเรียน</span>
+                                <div class="space-y-1.5">
+                                    <label class="text-[10px] font-semibold text-slate-600 dark:text-slate-400">ตัวเลขหลัก (เช่น 2,500)</label>
+                                    <input type="text" name="stat_students" value="<?php echo htmlspecialchars($settings['stat_students'] ?? ''); ?>" class="w-full glass-input rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-indigo-500">
+                                </div>
+                                <div class="space-y-1.5">
+                                    <label class="text-[10px] font-semibold text-slate-600 dark:text-slate-400">คำอธิบายเพิ่มเติม (เช่น นักเรียนทั้งหมด)</label>
+                                    <input type="text" name="stat_students_sub" value="<?php echo htmlspecialchars($settings['stat_students_sub'] ?? 'นักเรียนทั้งหมด'); ?>" class="w-full glass-input rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-indigo-500">
+                                </div>
+                            </div>
+
+                            <!-- Stat 2: Teachers -->
+                            <div class="p-4 bg-slate-100/50 dark:bg-slate-950/20 border border-slate-200 dark:border-white/5 rounded-2xl space-y-3">
+                                <span class="text-xs font-bold text-indigo-600 dark:text-indigo-400 flex items-center gap-1.5"><i class="fa-solid fa-chalkboard-user"></i> สถิติจำนวนครูและบุคลากร</span>
+                                <div class="space-y-1.5">
+                                    <label class="text-[10px] font-semibold text-slate-600 dark:text-slate-400">ตัวเลขหลัก (เช่น 120)</label>
+                                    <input type="text" name="stat_teachers" value="<?php echo htmlspecialchars($settings['stat_teachers'] ?? ''); ?>" class="w-full glass-input rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-indigo-500">
+                                </div>
+                                <div class="space-y-1.5">
+                                    <label class="text-[10px] font-semibold text-slate-600 dark:text-slate-400">คำอธิบายเพิ่มเติม (เช่น ครูและบุคลากรทางการศึกษา)</label>
+                                    <input type="text" name="stat_teachers_sub" value="<?php echo htmlspecialchars($settings['stat_teachers_sub'] ?? 'ครูและบุคลากรทางการศึกษา'); ?>" class="w-full glass-input rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-indigo-500">
+                                </div>
+                            </div>
+
+                            <!-- Stat 3: Awards -->
+                            <div class="p-4 bg-slate-100/50 dark:bg-slate-950/20 border border-slate-200 dark:border-white/5 rounded-2xl space-y-3">
+                                <span class="text-xs font-bold text-indigo-600 dark:text-indigo-400 flex items-center gap-1.5"><i class="fa-solid fa-trophy"></i> รางวัลและผลงานเด่น</span>
+                                <div class="space-y-1.5">
+                                    <label class="text-[10px] font-semibold text-slate-600 dark:text-slate-400">ตัวเลขหลัก (เช่น 50+)</label>
+                                    <input type="text" name="stat_awards" value="<?php echo htmlspecialchars($settings['stat_awards'] ?? ''); ?>" class="w-full glass-input rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-indigo-500">
+                                </div>
+                                <div class="space-y-1.5">
+                                    <label class="text-[10px] font-semibold text-slate-600 dark:text-slate-400">คำอธิบายเพิ่มเติม (เช่น รางวัลและความสำเร็จ)</label>
+                                    <input type="text" name="stat_awards_sub" value="<?php echo htmlspecialchars($settings['stat_awards_sub'] ?? 'รางวัลและความสำเร็จ'); ?>" class="w-full glass-input rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-indigo-500">
+                                </div>
+                            </div>
+
+                            <!-- Stat 4: Admissions -->
+                            <div class="p-4 bg-slate-100/50 dark:bg-slate-950/20 border border-slate-200 dark:border-white/5 rounded-2xl space-y-3">
+                                <span class="text-xs font-bold text-indigo-600 dark:text-indigo-400 flex items-center gap-1.5"><i class="fa-solid fa-percent"></i> อัตราการศึกษาต่อ</span>
+                                <div class="space-y-1.5">
+                                    <label class="text-[10px] font-semibold text-slate-600 dark:text-slate-400">ตัวเลขหลัก (เช่น 100%)</label>
+                                    <input type="text" name="stat_admission" value="<?php echo htmlspecialchars($settings['stat_admission'] ?? ''); ?>" class="w-full glass-input rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-indigo-500">
+                                </div>
+                                <div class="space-y-1.5">
+                                    <label class="text-[10px] font-semibold text-slate-600 dark:text-slate-400">คำอธิบายเพิ่มเติม (เช่น เข้าศึกษาต่อในระดับอุดมศึกษา)</label>
+                                    <input type="text" name="stat_admission_sub" value="<?php echo htmlspecialchars($settings['stat_admission_sub'] ?? 'เข้าศึกษาต่อในระดับอุดมศึกษา'); ?>" class="w-full glass-input rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-indigo-500">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Submit Button Row -->
+            <div class="flex items-center justify-end gap-3 pt-2">
+                <a href="<?php echo BASE_URL; ?>admin" class="px-5 py-3 hover:bg-slate-100 dark:hover:bg-white/5 border border-slate-300 dark:border-white/10 text-slate-700 dark:text-slate-300 text-xs font-bold rounded-xl transition-all">ยกเลิกดึงข้อมูล</a>
+                <button type="submit" class="px-7 py-3 bg-indigo-600 hover:bg-indigo-700 active:scale-95 text-white text-xs font-bold rounded-xl shadow-xl hover:shadow-indigo-500/20 transition-all flex items-center gap-2">
+                    <i class="fa-solid fa-save text-sm"></i> บันทึกการตั้งค่าทั้งหมด
+                </button>
+            </div>
+            
+        </form>
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="bg-slate-100/50 dark:bg-slate-950/40 text-slate-500 dark:text-slate-400 border-t border-slate-200 dark:border-white/5 mt-auto py-6 transition-colors duration-300">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-slate-500 text-xs">
+            <p>&copy; <?php echo date('Y'); ?> <?php echo SCHOOL_NAME_EN; ?>. Admin Portal System.</p>
+        </div>
+    </footer>
+
+    <!-- Interactive script switching logic -->
+    <script>
+        function switchSettingTab(panelId) {
+            // Hide all panels
+            document.querySelectorAll('.setting-panel-pane').forEach(pane => {
+                pane.classList.add('hidden');
+            });
+
+            // Reset all tab button styles
+            document.querySelectorAll('.setting-tab-btn').forEach(btn => {
+                btn.classList.remove('bg-indigo-600', 'text-white', 'shadow-lg');
+                btn.classList.add('text-slate-600', 'dark:text-slate-400', 'hover:text-slate-900', 'dark:hover:text-white');
+            });
+
+            // Show selected panel
+            const activePanel = document.getElementById(`setting-panel-${panelId}`);
+            if (activePanel) {
+                activePanel.classList.remove('hidden');
+            }
+
+            // Style active tab button
+            const activeBtn = document.getElementById(`tab-btn-${panelId}`);
+            if (activeBtn) {
+                activeBtn.classList.remove('text-slate-600', 'dark:text-slate-400', 'hover:text-slate-900', 'dark:hover:text-white');
+                activeBtn.classList.add('bg-indigo-600', 'text-white', 'shadow-lg');
+            }
+
+            // Save active tab inside temporary state
+            localStorage.setItem('active_setting_tab', panelId);
+        }
+
+        // Dark/Light Theme Switcher Handler
+        const htmlDoc = document.documentElement;
+
+        function toggleDarkMode() {
+            const isDarkModeActive = htmlDoc.classList.toggle('dark');
+            const targetTheme = isDarkModeActive ? 'dark' : 'light';
+            localStorage.setItem('school_theme', targetTheme);
+            updateThemeUI(targetTheme);
+        }
+
+        function updateThemeUI(theme) {
+            const themeIconEl = document.getElementById('theme-icon');
+            if (!themeIconEl) return;
+            
+            if (theme === 'dark') {
+                themeIconEl.className = 'fa-solid fa-sun text-yellow-400';
+            } else {
+                themeIconEl.className = 'fa-solid fa-moon text-slate-600 dark:text-slate-300';
+            }
+        }
+
+        // Initialize active tab and UI theme highlights on DOM load
+        document.addEventListener('DOMContentLoaded', () => {
+            const activeTab = localStorage.getItem('active_setting_tab') || 'general';
+            switchSettingTab(activeTab);
+
+            const currentTheme = localStorage.getItem('school_theme') || 'dark';
+            updateThemeUI(currentTheme);
+        });
+    </script>
+</body>
+</html>

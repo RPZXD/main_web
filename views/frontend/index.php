@@ -437,15 +437,16 @@
 
                 <!-- Circular Indicators Portal -->
                 <div class="space-y-2.5">
-                    <h4 class="text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">ดัชนีชี้วัดข้อมูลสาธารณะออนไลน์ (O1 - O43 Quick View)</h4>
+                    <h4 class="text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">ดัชนีชี้วัดข้อมูลสาธารณะออนไลน์ (ITA Quick View)</h4>
                     <div class="flex flex-wrap gap-1.5 max-h-[140px] overflow-y-auto pr-2 scrollbar-thin">
                         <?php 
                         $itaModel = new Ita();
-                        $indicators = $itaModel->getAll();
+                        $indicators = $itaModel->getAll('published');
                         foreach ($indicators as $ind):
-                            $isActive = ($ind['status'] === 'published' && (!empty($ind['file_path']) || !empty($ind['link_url'])));
+                            $isActive = (!empty($ind['file_path']) || !empty($ind['link_url']));
+                            if (!$isActive) continue;
                         ?>
-                            <a href="<?php echo BASE_URL; ?>ita?focus=<?php echo $ind['code']; ?>" class="w-8 h-8 rounded-lg flex items-center justify-center text-[10px] font-english font-bold transition-all border <?php echo $isActive ? 'bg-indigo-600/10 hover:bg-indigo-600 border-indigo-500/30 text-indigo-600 dark:text-indigo-400 hover:text-white' : 'bg-slate-100 dark:bg-white/5 border-slate-300 dark:border-white/10 text-slate-400 dark:text-slate-600 pointer-events-none'; ?>" title="<?php echo htmlspecialchars($ind['name']); ?>">
+                            <a href="<?php echo BASE_URL; ?>ita?focus=<?php echo $ind['code']; ?>" class="w-8 h-8 rounded-lg flex items-center justify-center text-[10px] font-english font-bold transition-all border bg-indigo-600/10 hover:bg-indigo-600 border-indigo-500/30 text-indigo-600 dark:text-indigo-400 hover:text-white" title="<?php echo htmlspecialchars($ind['name']); ?>">
                                 <?php echo $ind['code']; ?>
                             </a>
                         <?php endforeach; ?>

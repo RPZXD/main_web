@@ -1,4 +1,27 @@
 <?php
+if (!isset($route)) {
+    $requestUri = $_SERVER['REQUEST_URI'] ?? '/';
+    $parsedUrl = parse_url($requestUri);
+    $path = $parsedUrl['path'] ?? '/';
+    $basePath = defined('BASE_URL') ? (parse_url(BASE_URL, PHP_URL_PATH) ?? '/') : '/';
+    if (substr($basePath, -1) !== '/') {
+        $basePath .= '/';
+    }
+    $route = '/';
+    if (strpos($path, $basePath) === 0) {
+        $route = '/' . substr($path, strlen($basePath));
+    } else {
+        $route = $path;
+    }
+    $route = '/' . trim($route, '/');
+    if (strpos($route, '/public/') === 0) {
+        $route = '/' . substr($route, 8);
+    } elseif ($route === '/public') {
+        $route = '/';
+    }
+    $route = '/' . trim($route, '/');
+}
+
 $onlinePortals = [
     [
         'title' => 'ระบบรายงานการสอน',

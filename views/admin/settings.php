@@ -153,6 +153,26 @@
                             <label class="text-xs font-semibold text-slate-700 dark:text-slate-300">ชื่อย่อโรงเรียน (ภาษาไทย เช่น พช.)</label>
                             <input type="text" name="school_short_name" value="<?php echo htmlspecialchars($settings['school_short_name'] ?? ''); ?>" required class="w-full glass-input rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all">
                         </div>
+                        <div class="space-y-1.5 md:col-span-2">
+                            <label class="text-xs font-semibold text-slate-700 dark:text-slate-300">ลิงก์ ตารางเรียนนักเรียน (Google Drive PDF)</label>
+                            <input type="url" name="student_schedule_link" value="<?php echo htmlspecialchars($settings['student_schedule_link'] ?? ''); ?>" class="w-full glass-input rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all" placeholder="https://drive.google.com/file/d/.../view?usp=sharing">
+                            <p class="text-[10px] text-slate-400 dark:text-slate-500">วางลิงก์แชร์ไฟล์ PDF ตารางเรียนจาก Google Drive (ตรวจสอบสิทธิ์การเข้าถึงให้เป็น "ทุกคนที่มีลิงก์มีสิทธิ์อ่าน" ด้วย)</p>
+                        </div>
+                        <div class="space-y-1.5 md:col-span-2">
+                            <label class="text-xs font-semibold text-slate-700 dark:text-slate-300">ลิงก์ ตารางสอนครู (Google Drive PDF)</label>
+                            <input type="url" name="teacher_schedule_link" value="<?php echo htmlspecialchars($settings['teacher_schedule_link'] ?? ''); ?>" class="w-full glass-input rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all" placeholder="https://drive.google.com/file/d/.../view?usp=sharing">
+                            <p class="text-[10px] text-slate-400 dark:text-slate-500">วางลิงก์แชร์ไฟล์ PDF ตารางสอนจาก Google Drive (ตรวจสอบสิทธิ์การเข้าถึงให้เป็น "ทุกคนที่มีลิงก์มีสิทธิ์อ่าน" ด้วย)</p>
+                        </div>
+                        <div class="space-y-1.5 md:col-span-2">
+                            <label class="text-xs font-semibold text-slate-700 dark:text-slate-300">ลิงก์ช่องทางรับฟังความคิดเห็น (Google Form)</label>
+                            <input type="url" name="feedback_form_url" value="<?php echo htmlspecialchars($settings['feedback_form_url'] ?? ''); ?>" class="w-full glass-input rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all" placeholder="https://docs.google.com/forms/d/e/.../viewform?embedded=true">
+                            <p class="text-[10px] text-slate-400 dark:text-slate-500">วางลิงก์ Google Form สำหรับรับฟังความคิดเห็น (แนะนำลิงก์รูปแบบ ?embedded=true เพื่อให้ฝังในบราวเซอร์ได้อย่างพอดี)</p>
+                        </div>
+                        <div class="space-y-1.5 md:col-span-2">
+                            <label class="text-xs font-semibold text-slate-700 dark:text-slate-300">ลิงก์ช่องทางรับเรื่องร้องเรียน (Google Form)</label>
+                            <input type="url" name="complaints_form_url" value="<?php echo htmlspecialchars($settings['complaints_form_url'] ?? ''); ?>" class="w-full glass-input rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all" placeholder="https://docs.google.com/forms/d/e/.../viewform?embedded=true">
+                            <p class="text-[10px] text-slate-400 dark:text-slate-500">วางลิงก์ Google Form สำหรับรับเรื่องร้องเรียน (แนะนำลิงก์รูปแบบ ?embedded=true เพื่อให้ฝังในบราวเซอร์ได้อย่างพอดี)</p>
+                        </div>
                     </div>
                 </div>
 

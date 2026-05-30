@@ -13,6 +13,9 @@ if (substr($baseDir, -1) !== '/') {
     $baseDir .= '/';
 }
 
+// Remove 'public/' from path so URLs work from /main_web/ root
+$baseDir = str_replace('/public/', '/', $baseDir);
+
 define('BASE_URL', $protocol . '://' . $host . $baseDir);
 
 // Portals & Educational System Links for Navigation

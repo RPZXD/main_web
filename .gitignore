@@ -1,0 +1,5 @@
+.agents/
+.vscode/
+scratch/
+composer.phar
+skills-lock.json

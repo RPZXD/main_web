@@ -63,7 +63,11 @@ class AdminSettingController {
             'stat_admission_sub' => trim($_POST['stat_admission_sub'] ?? ''),
             'exec_name' => trim($_POST['exec_name'] ?? ''),
             'exec_position' => trim($_POST['exec_position'] ?? ''),
-            'exec_message' => trim($_POST['exec_message'] ?? '')
+            'exec_message' => trim($_POST['exec_message'] ?? ''),
+            'student_schedule_link' => trim($_POST['student_schedule_link'] ?? ''),
+            'teacher_schedule_link' => trim($_POST['teacher_schedule_link'] ?? ''),
+            'feedback_form_url' => trim($_POST['feedback_form_url'] ?? ''),
+            'complaints_form_url' => trim($_POST['complaints_form_url'] ?? '')
         ];
 
         // Perform XSS cleaning for key text inputs
@@ -214,6 +218,162 @@ class AdminSettingController {
         }
 
         header('Location: ' . BASE_URL . 'admin/settings');
+        exit();
+    }
+
+    /**
+     * Updates only schedule links from the dashboard tab
+     */
+    public function updateSchedules() {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $studentLink = trim($_POST['student_schedule_link'] ?? '');
+            $teacherLink = trim($_POST['teacher_schedule_link'] ?? '');
+            
+            // XSS clean
+            $studentLink = htmlspecialchars($studentLink, ENT_QUOTES, 'UTF-8');
+            $teacherLink = htmlspecialchars($teacherLink, ENT_QUOTES, 'UTF-8');
+            
+            $this->settingModel->update_setting('student_schedule_link', $studentLink);
+            $this->settingModel->update_setting('teacher_schedule_link', $teacherLink);
+            
+            $_SESSION['success'] = 'บันทึกการอัปเดตลิงก์ตารางเรียนและตารางสอนเรียบร้อยแล้ว';
+        }
+        
+        header('Location: ' . BASE_URL . 'admin?tab=schedules');
+        exit();
+    }
+
+    /**
+     * Updates only feedback form URL from the dashboard tab
+     */
+    public function updateFeedback() {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $feedbackLink = trim($_POST['feedback_form_url'] ?? '');
+            
+            // XSS clean
+            $feedbackLink = htmlspecialchars($feedbackLink, ENT_QUOTES, 'UTF-8');
+            
+            $this->settingModel->update_setting('feedback_form_url', $feedbackLink);
+            
+            $_SESSION['success'] = 'บันทึกการอัปเดตลิงก์ช่องทางรับฟังความคิดเห็นเรียบร้อยแล้ว';
+        }
+        
+        header('Location: ' . BASE_URL . 'admin?tab=feedback');
+        exit();
+    }
+
+    /**
+     * Updates only complaints form URL from the dashboard tab
+     */
+    public function updateComplaints() {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $complaintsLink = trim($_POST['complaints_form_url'] ?? '');
+            
+            // XSS clean
+            $complaintsLink = htmlspecialchars($complaintsLink, ENT_QUOTES, 'UTF-8');
+            
+            $this->settingModel->update_setting('complaints_form_url', $complaintsLink);
+            
+            $_SESSION['success'] = 'บันทึกการอัปเดตลิงก์ช่องทางรับเรื่องร้องเรียนเรียบร้อยแล้ว';
+        }
+        
+        header('Location: ' . BASE_URL . 'admin?tab=complaints');
+        exit();
+    }
+
+    /**
+     * Receives POST PDF file upload and overwrites the target school handbook/regulation document
+     */
+    public function uploadDocument() {
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            header('Location: ' . BASE_URL . 'admin?tab=documents');
+            exit();
+        }
+
+        $documentKey = trim($_POST['document_key'] ?? '');
+        
+        $filesMap = [
+            'handbook' => [
+                'name' => 'คู่มือนักเรียนและผู้ปกครอง.pdf',
+                'label' => 'คู่มือนักเรียนและผู้ปกครอง'
+            ],
+            'support_handbook' => [
+                'name' => 'คู่มือระบบดูแลช่วยเหลือนักเรียน.pdf',
+                'label' => 'คู่มือระบบดูแลช่วยเหลือนักเรียน'
+            ],
+            'discipline' => [
+                'name' => 'ระเบียบโรงเรียนพิชัย 2568.pdf',
+                'label' => 'ระเบียบวินัยและความประพฤติ'
+            ],
+            'dress' => [
+                'name' => 'ประกาศโรงเรียนพิชัย-ว่าด้วยทรงผม2566_230509_113401.pdf',
+                'label' => 'ระเบียบเครื่องแต่งกายและทรงผม'
+            ],
+            'campus' => [
+                'name' => 'ประกาศแต่งตั้งคณะกรรมการสหวิทยาเขตพระยาพิชัยดาบหัก.pdf',
+                'label' => 'สหวิทยาเขตพระยาพิชัยดาบหัก'
+            ],
+            'no_gift_policy' => [
+                'name' => 'แนวปฏิบัติ DO\'S & Don\'ts.pdf',
+                'label' => 'แนวปฏิบัติ Do\'s & Don\'ts และนโยบาย No Gift Policy'
+            ],
+            'no_gift_announcement' => [
+                'name' => 'ประกาศเจตนารมณ์ นโยบาย No Gift Polioy จากการปฏิบัติหน้าที่.pdf',
+                'label' => 'ประกาศเจตนารมณ์ นโยบาย No Gift Policy'
+            ]
+        ];
+
+        if (!array_key_exists($documentKey, $filesMap)) {
+            $_SESSION['error'] = 'ประเภทเอกสารไม่ถูกต้อง';
+            header('Location: ' . BASE_URL . 'admin?tab=documents');
+            exit();
+        }
+
+        $targetDoc = $filesMap[$documentKey];
+        $targetFilename = $targetDoc['name'];
+        $targetLabel = $targetDoc['label'];
+
+        if (!isset($_FILES['pdf_file']) || $_FILES['pdf_file']['error'] !== UPLOAD_ERR_OK) {
+            $_SESSION['error'] = 'กรุณาเลือกไฟล์ PDF ที่ต้องการอัปโหลด หรือเกิดข้อผิดพลาดในการอัปโหลด';
+            header('Location: ' . BASE_URL . 'admin?tab=documents');
+            exit();
+        }
+
+        $uploadedFile = $_FILES['pdf_file'];
+        
+        // Validate MIME type is application/pdf
+        $fileInfo = finfo_open(FILEINFO_MIME_TYPE);
+        $mimeType = finfo_file($fileInfo, $uploadedFile['tmp_name']);
+        finfo_close($fileInfo);
+
+        if ($mimeType !== 'application/pdf') {
+            $_SESSION['error'] = 'ไฟล์ที่อัปโหลดต้องเป็นรูปแบบ PDF เท่านั้น';
+            header('Location: ' . BASE_URL . 'admin?tab=documents');
+            exit();
+        }
+
+        // Limit size to 15MB
+        if ($uploadedFile['size'] > 15 * 1024 * 1024) {
+            $_SESSION['error'] = 'ขนาดไฟล์ PDF ต้องไม่เกิน 15MB';
+            header('Location: ' . BASE_URL . 'admin?tab=documents');
+            exit();
+        }
+
+        // Move and overwrite physical file
+        $destination = UPLOAD_DIR . $targetFilename;
+        
+        // Double check directory exists
+        if (!is_dir(UPLOAD_DIR)) {
+            mkdir(UPLOAD_DIR, 0777, true);
+        }
+
+        if (move_uploaded_file($uploadedFile['tmp_name'], $destination)) {
+            $_SESSION['success'] = 'อัปโหลดและอัปเดตไฟล์ "' . $targetLabel . '" เรียบร้อยแล้ว';
+        } else {
+            $_SESSION['error'] = 'ไม่สามารถบันทึกไฟล์เขียนทับลงเซิร์ฟเวอร์ได้';
+        }
+
+        header('Location: ' . BASE_URL . 'admin?tab=documents');
         exit();
     }
 }

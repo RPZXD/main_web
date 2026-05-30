@@ -50,45 +50,8 @@ class About {
      */
     public function getExecutives() {
         try {
-            // Sort by order_num ascending
-            $stmt = $this->db->query("SELECT * FROM school_executives ORDER BY order_num ASC");
-            $rows = $stmt->fetchAll();
-
-            // If there are seeded executives, return them
-            if (!empty($rows)) {
-                return $rows;
-            }
-
-            // Fallback: use teacher table from shared phichaia_student database
-            // Map commonly-used teacher columns to the executives view shape
-            $fallbackSql = "SELECT Teach_id, Teach_name, Teach_Position2, Teach_photo, Teach_email, Teach_Academic FROM phichaia_student.teacher WHERE Teach_status = 1 ORDER BY Teach_Position2 IS NULL, Teach_Position2 LIMIT 100";
-            $fbStmt = $this->db->query($fallbackSql);
-            $teachers = $fbStmt->fetchAll();
-
-            $executives = [];
-            foreach ($teachers as $i => $t) {
-                $image = '';
-                if (!empty($t['Teach_photo'])) {
-                    // Common public URL used across the workspace for teacher photos
-                    $image = 'https://std.phichai.ac.th/teacher/uploads/phototeach/' . ltrim($t['Teach_photo'], '/');
-                }
-
-                $executives[] = [
-                    'id' => $t['Teach_id'] ?? null,
-                    'name_th' => $t['Teach_name'] ?? '',
-                    'name_en' => $t['Teach_name'] ?? '',
-                    'position_th' => $t['Teach_Position2'] ?? '',
-                    'position_en' => $t['Teach_Position2'] ?? '',
-                    'period' => null,
-                    'image_path' => $image,
-                    'academic_rank' => $t['Teach_Academic'] ?? '',
-                    'email' => $t['Teach_email'] ?? '',
-                    'is_current' => 1,
-                    'order_num' => $i + 1,
-                ];
-            }
-
-            return $executives;
+            $stmt = $this->db->query("SELECT * FROM phichaia_student.teacher WHERE Teach_Position2 = 'ผู้บริหาร' ORDER BY Teach_id ASC");
+            return $stmt->fetchAll();
         } catch (PDOException $e) {
             error_log("School executives list query error: " . $e->getMessage());
             return [];

@@ -5,8 +5,8 @@
 class Database {
     private static $host = '127.0.0.1';
     private static $db_name = 'school_db';
-    private static $username = 'root';
-    private static $password = ''; // Default XAMPP MySQL password is empty
+    private static $username = 'phichaia_stdcare';
+    private static $password = '48dv_m64N'; // Default XAMPP MySQL password is empty
     private static $conn = null;
 
     /**

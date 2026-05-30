@@ -155,27 +155,88 @@
             </div>
         </div>
 
-        <!-- System Tab Navigation -->
+        <!-- Tab Navigation & Content Layout Grid -->
         <?php
         $activeTab = $_GET['tab'] ?? 'news';
         ?>
-        <div class="flex border-b border-slate-200 dark:border-white/5 gap-2 overflow-x-auto">
-            <a href="?tab=news" class="px-6 py-3.5 text-xs font-semibold border-b-2 transition-all duration-300 shrink-0 <?php echo $activeTab === 'news' ? 'border-indigo-500 text-indigo-600 dark:text-indigo-400 bg-slate-100 dark:bg-white/5 rounded-t-xl' : 'border-transparent text-slate-500 dark:text-slate-400 hover:text-slate-950 dark:hover:text-white'; ?>">
-                <i class="fa-regular fa-newspaper mr-2"></i>ระบบจัดการข่าวสารและกิจกรรม
-            </a>
-            <a href="?tab=ita" class="px-6 py-3.5 text-xs font-semibold border-b-2 transition-all duration-300 shrink-0 <?php echo $activeTab === 'ita' ? 'border-indigo-500 text-indigo-600 dark:text-indigo-400 bg-slate-100 dark:bg-white/5 rounded-t-xl' : 'border-transparent text-slate-500 dark:text-slate-400 hover:text-slate-950 dark:hover:text-white'; ?>">
-                <i class="fa-solid fa-chart-bar mr-2"></i>ระบบประเมิน ITA Online (O1 - O43)
-            </a>
-            <a href="?tab=hero" class="px-6 py-3.5 text-xs font-semibold border-b-2 transition-all duration-300 shrink-0 <?php echo $activeTab === 'hero' ? 'border-indigo-500 text-indigo-600 dark:text-indigo-400 bg-slate-100 dark:bg-white/5 rounded-t-xl' : 'border-transparent text-slate-500 dark:text-slate-400 hover:text-slate-950 dark:hover:text-white'; ?>">
-                <i class="fa-regular fa-images mr-2"></i>ระบบจัดการรูปภาพสไลด์หน้าแรก (Hero Carousel)
-            </a>
-            <a href="?tab=ticker" class="px-6 py-3.5 text-xs font-semibold border-b-2 transition-all duration-300 shrink-0 <?php echo $activeTab === 'ticker' ? 'border-indigo-500 text-indigo-600 dark:text-indigo-400 bg-slate-100 dark:bg-white/5 rounded-t-xl' : 'border-transparent text-slate-500 dark:text-slate-400 hover:text-slate-950 dark:hover:text-white'; ?>">
-                <i class="fa-solid fa-bullhorn mr-2"></i>ข่าวด่วนวิ่งใต้แถบเมนู (Scrolling Ticker)
-            </a>
-            <a href="?tab=about" class="px-6 py-3.5 text-xs font-semibold border-b-2 transition-all duration-300 shrink-0 <?php echo $activeTab === 'about' ? 'border-indigo-500 text-indigo-600 dark:text-indigo-400 bg-slate-100 dark:bg-white/5 rounded-t-xl' : 'border-transparent text-slate-500 dark:text-slate-400 hover:text-slate-950 dark:hover:text-white'; ?>">
-                <i class="fa-solid fa-info-circle mr-2"></i>จัดการข้อมูลแนะนำโรงเรียน (About)
-            </a>
+        
+        <!-- Mobile Dropdown Selector Menu -->
+        <div class="lg:hidden w-full bg-slate-100/80 dark:bg-slate-900/60 border border-slate-200/50 dark:border-white/10 p-4 rounded-2xl flex items-center justify-between gap-3 shadow-lg backdrop-blur-md mb-6 transition-all duration-300">
+            <span class="text-xs font-bold text-slate-700 dark:text-slate-300"><i class="fa-solid fa-list-check mr-2 text-indigo-500 animate-pulse"></i>เมนูเลือกจัดการข้อมูล</span>
+            <select onchange="window.location.href=this.value" class="bg-white dark:bg-slate-950 text-slate-800 dark:text-white border border-slate-200 dark:border-white/10 rounded-xl px-3 py-2.5 text-xs focus:outline-none focus:ring-2 focus:ring-indigo-500 font-semibold cursor-pointer">
+                <option value="?tab=news" <?php echo $activeTab === 'news' ? 'selected' : ''; ?>>📰 จัดการข่าวสารและกิจกรรม</option>
+                <option value="?tab=ita" <?php echo $activeTab === 'ita' ? 'selected' : ''; ?>>📊 ระบบประเมิน ITA Online</option>
+                <option value="?tab=hero" <?php echo $activeTab === 'hero' ? 'selected' : ''; ?>>🖼️ จัดการรูปสไลด์แนะนำ</option>
+                <option value="?tab=ticker" <?php echo $activeTab === 'ticker' ? 'selected' : ''; ?>>📢 จัดการข้อความวิ่งด่วน</option>
+                <option value="?tab=about" <?php echo $activeTab === 'about' ? 'selected' : ''; ?>>ℹ️ จัดการข้อมูลแนะนำโรงเรียน</option>
+                <option value="?tab=stats" <?php echo $activeTab === 'stats' ? 'selected' : ''; ?>>📈 จัดการข้อมูลและสถิติพื้นฐาน</option>
+                <option value="?tab=schedules" <?php echo $activeTab === 'schedules' ? 'selected' : ''; ?>>📅 จัดการลิงก์ตารางเรียน/สอน</option>
+                <option value="?tab=documents" <?php echo $activeTab === 'documents' ? 'selected' : ''; ?>>📂 จัดการไฟล์คู่มือและระเบียบ</option>
+                <option value="?tab=feedback" <?php echo $activeTab === 'feedback' ? 'selected' : ''; ?>>💬 จัดการลิงก์รับฟังความคิดเห็น</option>
+                <option value="?tab=complaints" <?php echo $activeTab === 'complaints' ? 'selected' : ''; ?>>⚠️ จัดการลิงก์รับเรื่องร้องเรียน</option>
+            </select>
         </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+            <!-- Desktop Left Sidebar -->
+            <div class="hidden lg:block lg:col-span-3 space-y-4 sticky top-28 transition-all duration-300">
+                <div class="glass-card p-4 rounded-3xl shadow-xl border border-slate-900/5 dark:border-white/10 space-y-1 bg-white/70 dark:bg-slate-900/70 backdrop-blur-xl">
+                    <p class="px-3 text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest mb-3">แผงควบคุมหลัก</p>
+                    
+                    <a href="?tab=news" class="flex items-center gap-3 px-4 py-3.5 text-xs font-bold rounded-2xl transition-all duration-300 <?php echo $activeTab === 'news' ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-500/20 transform -translate-y-0.5 scale-[1.02]' : 'text-slate-600 dark:text-slate-400 hover:text-slate-950 dark:hover:text-white hover:bg-slate-200/50 dark:hover:bg-white/5 border border-transparent hover:border-slate-200 dark:hover:border-white/5'; ?>">
+                        <i class="fa-regular fa-newspaper text-sm shrink-0 w-5 text-center text-indigo-500 dark:text-indigo-400 <?php echo $activeTab === 'news' ? '!text-white' : ''; ?>"></i>
+                        <span>จัดการข่าวสารและกิจกรรม</span>
+                    </a>
+                    
+                    <a href="?tab=ita" class="flex items-center gap-3 px-4 py-3.5 text-xs font-bold rounded-2xl transition-all duration-300 <?php echo $activeTab === 'ita' ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-500/20 transform -translate-y-0.5 scale-[1.02]' : 'text-slate-600 dark:text-slate-400 hover:text-slate-950 dark:hover:text-white hover:bg-slate-200/50 dark:hover:bg-white/5 border border-transparent hover:border-slate-200 dark:hover:border-white/5'; ?>">
+                        <i class="fa-solid fa-chart-bar text-sm shrink-0 w-5 text-center text-indigo-500 dark:text-indigo-400 <?php echo $activeTab === 'ita' ? '!text-white' : ''; ?>"></i>
+                        <span>ประเมิน ITA Online</span>
+                    </a>
+
+                    <a href="?tab=hero" class="flex items-center gap-3 px-4 py-3.5 text-xs font-bold rounded-2xl transition-all duration-300 <?php echo $activeTab === 'hero' ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-500/20 transform -translate-y-0.5 scale-[1.02]' : 'text-slate-600 dark:text-slate-400 hover:text-slate-950 dark:hover:text-white hover:bg-slate-200/50 dark:hover:bg-white/5 border border-transparent hover:border-slate-200 dark:hover:border-white/5'; ?>">
+                        <i class="fa-regular fa-images text-sm shrink-0 w-5 text-center text-indigo-500 dark:text-indigo-400 <?php echo $activeTab === 'hero' ? '!text-white' : ''; ?>"></i>
+                        <span>รูปสไลด์หน้าแรก (Hero)</span>
+                    </a>
+
+                    <a href="?tab=ticker" class="flex items-center gap-3 px-4 py-3.5 text-xs font-bold rounded-2xl transition-all duration-300 <?php echo $activeTab === 'ticker' ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-500/20 transform -translate-y-0.5 scale-[1.02]' : 'text-slate-600 dark:text-slate-400 hover:text-slate-950 dark:hover:text-white hover:bg-slate-200/50 dark:hover:bg-white/5 border border-transparent hover:border-slate-200 dark:hover:border-white/5'; ?>">
+                        <i class="fa-solid fa-bullhorn text-sm shrink-0 w-5 text-center text-indigo-500 dark:text-indigo-400 <?php echo $activeTab === 'ticker' ? '!text-white' : ''; ?>"></i>
+                        <span>ข่าวด่วนตัววิ่ง (Ticker)</span>
+                    </a>
+
+                    <a href="?tab=about" class="flex items-center gap-3 px-4 py-3.5 text-xs font-bold rounded-2xl transition-all duration-300 <?php echo $activeTab === 'about' ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-500/20 transform -translate-y-0.5 scale-[1.02]' : 'text-slate-600 dark:text-slate-400 hover:text-slate-950 dark:hover:text-white hover:bg-slate-200/50 dark:hover:bg-white/5 border border-transparent hover:border-slate-200 dark:hover:border-white/5'; ?>">
+                        <i class="fa-solid fa-info-circle text-sm shrink-0 w-5 text-center text-indigo-550 text-indigo-500 dark:text-indigo-400 <?php echo $activeTab === 'about' ? '!text-white' : ''; ?>"></i>
+                        <span>แนะนำโรงเรียน (About)</span>
+                    </a>
+
+                    <a href="?tab=stats" class="flex items-center gap-3 px-4 py-3.5 text-xs font-bold rounded-2xl transition-all duration-300 <?php echo $activeTab === 'stats' ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-500/20 transform -translate-y-0.5 scale-[1.02]' : 'text-slate-600 dark:text-slate-400 hover:text-slate-950 dark:hover:text-white hover:bg-slate-200/50 dark:hover:bg-white/5 border border-transparent hover:border-slate-200 dark:hover:border-white/5'; ?>">
+                        <i class="fa-solid fa-database text-sm shrink-0 w-5 text-center text-indigo-550 text-indigo-500 dark:text-indigo-400 <?php echo $activeTab === 'stats' ? '!text-white' : ''; ?>"></i>
+                        <span>สถิติและข้อมูลทั่วไป</span>
+                    </a>
+
+                    <a href="?tab=schedules" class="flex items-center gap-3 px-4 py-3.5 text-xs font-bold rounded-2xl transition-all duration-300 <?php echo $activeTab === 'schedules' ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-500/20 transform -translate-y-0.5 scale-[1.02]' : 'text-slate-600 dark:text-slate-400 hover:text-slate-950 dark:hover:text-white hover:bg-slate-200/50 dark:hover:bg-white/5 border border-transparent hover:border-slate-200 dark:hover:border-white/5'; ?>">
+                        <i class="fa-solid fa-calendar-days text-sm shrink-0 w-5 text-center text-indigo-550 text-indigo-500 dark:text-indigo-400 <?php echo $activeTab === 'schedules' ? '!text-white' : ''; ?>"></i>
+                        <span>จัดการตารางเรียน/สอน</span>
+                    </a>
+
+                    <a href="?tab=documents" class="flex items-center gap-3 px-4 py-3.5 text-xs font-bold rounded-2xl transition-all duration-300 <?php echo $activeTab === 'documents' ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-500/20 transform -translate-y-0.5 scale-[1.02]' : 'text-slate-600 dark:text-slate-400 hover:text-slate-955 dark:hover:text-white hover:bg-slate-200/50 dark:hover:bg-white/5 border border-transparent hover:border-slate-200 dark:hover:border-white/5'; ?>">
+                        <i class="fa-solid fa-folder-open text-sm shrink-0 w-5 text-center text-indigo-500 dark:text-indigo-400 <?php echo $activeTab === 'documents' ? '!text-white' : ''; ?>"></i>
+                        <span>จัดการไฟล์คู่มือและระเบียบ</span>
+                    </a>
+
+                    <a href="?tab=feedback" class="flex items-center gap-3 px-4 py-3.5 text-xs font-bold rounded-2xl transition-all duration-300 <?php echo $activeTab === 'feedback' ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-500/20 transform -translate-y-0.5 scale-[1.02]' : 'text-slate-600 dark:text-slate-400 hover:text-slate-955 dark:hover:text-white hover:bg-slate-200/50 dark:hover:bg-white/5 border border-transparent hover:border-slate-200 dark:hover:border-white/5'; ?>">
+                        <i class="fa-solid fa-comments text-sm shrink-0 w-5 text-center text-indigo-500 dark:text-indigo-400 <?php echo $activeTab === 'feedback' ? '!text-white' : ''; ?>"></i>
+                        <span>จัดการลิงก์รับฟังความคิดเห็น</span>
+                    </a>
+
+                    <a href="?tab=complaints" class="flex items-center gap-3 px-4 py-3.5 text-xs font-bold rounded-2xl transition-all duration-300 <?php echo $activeTab === 'complaints' ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-500/20 transform -translate-y-0.5 scale-[1.02]' : 'text-slate-600 dark:text-slate-400 hover:text-slate-955 dark:hover:text-white hover:bg-slate-200/50 dark:hover:bg-white/5 border border-transparent hover:border-slate-200 dark:hover:border-white/5'; ?>">
+                        <i class="fa-solid fa-circle-exclamation text-sm shrink-0 w-5 text-center text-indigo-500 dark:text-indigo-400 <?php echo $activeTab === 'complaints' ? '!text-white' : ''; ?>"></i>
+                        <span>จัดการลิงก์รับเรื่องร้องเรียน</span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Content Area Column -->
+            <div class="lg:col-span-9 space-y-6 w-full">
 
         <!-- Tab 1 Panel: News Management -->
         <?php if ($activeTab === 'news'): ?>
@@ -587,6 +648,363 @@
                 </div>
             </div>
         <?php endif; ?>
+
+        <!-- Tab 6 Panel: School Statistics Configuration -->
+        <?php if ($activeTab === 'stats'): 
+            $infoModel = new Info();
+            $generalStats = $infoModel->getGeneralStats();
+            
+            // Extract stats with fallback defaults
+            $founded_date_th = $generalStats['founded_date_th']['stat_value'] ?? '1 มิถุนายน พ.ศ. 2482';
+            $founded_date_en = $generalStats['founded_date_en']['stat_value'] ?? 'June 1, 1939';
+            $education_levels_th = $generalStats['education_levels_th']['stat_value'] ?? 'มัธยมศึกษาปีที่ 1 - 6';
+            $education_levels_en = $generalStats['education_levels_en']['stat_value'] ?? 'Mathayom 1 - 6';
+            $address_th = $generalStats['address_th']['stat_value'] ?? '';
+            $address_en = $generalStats['address_en']['stat_value'] ?? '';
+            $phone = $generalStats['phone']['stat_value'] ?? '';
+            $email = $generalStats['email']['stat_value'] ?? '';
+            $coordinator_th = $generalStats['coordinator_th']['stat_value'] ?? '';
+            $coordinator_en = $generalStats['coordinator_en']['stat_value'] ?? '';
+        ?>
+            <div class="space-y-6 animate-fade-in-up">
+                <!-- Action Header -->
+                <div>
+                    <h2 class="text-lg font-bold text-slate-900 dark:text-white">จัดการข้อมูลและสถิติพื้นฐานโรงเรียน</h2>
+                    <p class="text-slate-500 dark:text-slate-400 text-xs">แก้ไขข้อมูลพื้นฐานทั่วไป และข้อมูลติดต่อผู้ประสานงานสำหรับแสดงผลบนแผงหน้าจอข้อมูลสารสนเทศ (School Information Dashboard)</p>
+                </div>
+
+                <div class="glass-card rounded-3xl p-6 md:p-8 shadow-xl max-w-4xl">
+                    <form action="<?php echo BASE_URL; ?>admin/statistics/update" method="POST" class="space-y-6">
+                        <!-- Group 1: General Info -->
+                        <div class="space-y-4">
+                            <h3 class="text-sm font-bold text-indigo-600 dark:text-indigo-400 border-b border-slate-100 dark:border-white/5 pb-2">
+                                <i class="fa-solid fa-circle-info mr-1.5"></i>ข้อมูลทั่วไปสถานศึกษา
+                            </h3>
+                            
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div class="space-y-1">
+                                    <label class="text-xs font-semibold text-slate-700 dark:text-slate-300">วันก่อตั้งโรงเรียน (ภาษาไทย)</label>
+                                    <input type="text" name="founded_date_th" value="<?php echo htmlspecialchars($founded_date_th); ?>" required class="w-full glass-input rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all">
+                                </div>
+                                <div class="space-y-1">
+                                    <label class="text-xs font-semibold text-slate-700 dark:text-slate-300">วันก่อตั้งโรงเรียน (ภาษาอังกฤษ)</label>
+                                    <input type="text" name="founded_date_en" value="<?php echo htmlspecialchars($founded_date_en); ?>" required class="w-full glass-input rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all">
+                                </div>
+                            </div>
+
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div class="space-y-1">
+                                    <label class="text-xs font-semibold text-slate-700 dark:text-slate-300">ระดับชั้นที่เปิดสอน (ภาษาไทย)</label>
+                                    <input type="text" name="education_levels_th" value="<?php echo htmlspecialchars($education_levels_th); ?>" required class="w-full glass-input rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all">
+                                </div>
+                                <div class="space-y-1">
+                                    <label class="text-xs font-semibold text-slate-700 dark:text-slate-300">ระดับชั้นที่เปิดสอน (ภาษาอังกฤษ)</label>
+                                    <input type="text" name="education_levels_en" value="<?php echo htmlspecialchars($education_levels_en); ?>" required class="w-full glass-input rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all">
+                                </div>
+                            </div>
+
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div class="space-y-1">
+                                    <label class="text-xs font-semibold text-slate-700 dark:text-slate-300">ที่ตั้งสถานศึกษา (ภาษาไทย)</label>
+                                    <textarea name="address_th" required rows="2" class="w-full glass-input rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all"><?php echo htmlspecialchars($address_th); ?></textarea>
+                                </div>
+                                <div class="space-y-1">
+                                    <label class="text-xs font-semibold text-slate-700 dark:text-slate-300">ที่ตั้งสถานศึกษา (ภาษาอังกฤษ)</label>
+                                    <textarea name="address_en" required rows="2" class="w-full glass-input rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all"><?php echo htmlspecialchars($address_en); ?></textarea>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Group 2: Contact Info -->
+                        <div class="space-y-4 pt-4">
+                            <h3 class="text-sm font-bold text-indigo-600 dark:text-indigo-400 border-b border-slate-100 dark:border-white/5 pb-2">
+                                <i class="fa-solid fa-address-book mr-1.5"></i>ข้อมูลติดต่อและประสานงาน
+                            </h3>
+                            
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div class="space-y-1">
+                                    <label class="text-xs font-semibold text-slate-700 dark:text-slate-300">เบอร์โทรศัพท์ติดต่อ</label>
+                                    <input type="text" name="phone" value="<?php echo htmlspecialchars($phone); ?>" required class="w-full glass-input rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all">
+                                </div>
+                                <div class="space-y-1">
+                                    <label class="text-xs font-semibold text-slate-700 dark:text-slate-300">อีเมลติดต่อ</label>
+                                    <input type="email" name="email" value="<?php echo htmlspecialchars($email); ?>" required class="w-full glass-input rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all">
+                                </div>
+                            </div>
+
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div class="space-y-1">
+                                    <label class="text-xs font-semibold text-slate-700 dark:text-slate-300">ผู้ประสานงาน (ภาษาไทย)</label>
+                                    <input type="text" name="coordinator_th" value="<?php echo htmlspecialchars($coordinator_th); ?>" required class="w-full glass-input rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all">
+                                </div>
+                                <div class="space-y-1">
+                                    <label class="text-xs font-semibold text-slate-700 dark:text-slate-300">ผู้ประสานงาน (ภาษาอังกฤษ)</label>
+                                    <input type="text" name="coordinator_en" value="<?php echo htmlspecialchars($coordinator_en); ?>" required class="w-full glass-input rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Submit Button -->
+                        <div class="flex justify-end pt-6 border-t border-slate-100 dark:border-white/5">
+                            <button type="submit" class="px-6 py-3 bg-emerald-600 hover:bg-emerald-700 active:scale-95 text-white text-xs font-bold rounded-xl shadow-lg transition-all flex items-center gap-1.5">
+                                <i class="fa-solid fa-save"></i> บันทึกข้อมูลสถิติ
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        <?php endif; ?>
+
+        <!-- Tab 7 Panel: Manage Schedules (Google Drive Links) -->
+        <?php if ($activeTab === 'schedules'): 
+            $settingModel = new Setting();
+            $settings = $settingModel->get_all_settings();
+            
+            $studentLink = $settings['student_schedule_link'] ?? '';
+            $teacherLink = $settings['teacher_schedule_link'] ?? '';
+        ?>
+            <div class="space-y-6 animate-fade-in-up">
+                <!-- Action Header -->
+                <div>
+                    <h2 class="text-lg font-bold text-slate-900 dark:text-white">จัดการลิงก์ตารางเรียนและตารางสอน</h2>
+                    <p class="text-slate-500 dark:text-slate-400 text-xs">ระบุลิงก์แชร์โฟลเดอร์หรือไฟล์ Google Drive PDF สำหรับตารางเรียนนักเรียนและตารางสอนครู</p>
+                </div>
+
+                <div class="glass-card rounded-3xl p-6 md:p-8 shadow-xl max-w-4xl">
+                    <form action="<?php echo BASE_URL; ?>admin/settings/schedules" method="POST" class="space-y-6">
+                        <div class="space-y-6">
+                            <!-- Student Link -->
+                            <div class="space-y-2">
+                                <label class="text-xs font-semibold text-slate-700 dark:text-slate-300 flex items-center gap-1.5">
+                                    <i class="fa-solid fa-graduation-cap text-indigo-500 text-sm"></i>
+                                    <span>ลิงก์ ตารางเรียนนักเรียน (Google Drive PDF หรือ โฟลเดอร์)</span>
+                                </label>
+                                <input type="url" name="student_schedule_link" value="<?php echo htmlspecialchars($studentLink); ?>" class="w-full glass-input rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all" placeholder="https://drive.google.com/file/d/... หรือ https://drive.google.com/drive/folders/...">
+                                <p class="text-[10px] text-slate-400 dark:text-slate-500 leading-normal">
+                                    วางลิงก์แชร์ไฟล์ PDF หรือลิงก์โฟลเดอร์รวบรวมตารางเรียนจาก Google Drive (โปรดตั้งค่าการแชร์ให้เป็น "ทุกคนที่มีลิงก์มีสิทธิ์อ่าน" ด้วยเพื่อให้บุคคลภายนอกเปิดดูได้)</p>
+                            </div>
+
+                            <hr class="border-slate-100 dark:border-white/5 my-2">
+
+                            <!-- Teacher Link -->
+                            <div class="space-y-2">
+                                <label class="text-xs font-semibold text-slate-700 dark:text-slate-300 flex items-center gap-1.5">
+                                    <i class="fa-solid fa-chalkboard-teacher text-indigo-500 text-sm"></i>
+                                    <span>ลิงก์ ตารางสอนครู (Google Drive PDF หรือ โฟลเดอร์)</span>
+                                </label>
+                                <input type="url" name="teacher_schedule_link" value="<?php echo htmlspecialchars($teacherLink); ?>" class="w-full glass-input rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all" placeholder="https://drive.google.com/file/d/... หรือ https://drive.google.com/drive/folders/...">
+                                <p class="text-[10px] text-slate-400 dark:text-slate-500 leading-normal">
+                                    วางลิงก์แชร์ไฟล์ PDF หรือลิงก์โฟลเดอร์รวบรวมตารางสอนคณะครูจาก Google Drive (โปรดตั้งค่าการแชร์ให้เป็น "ทุกคนที่มีลิงก์มีสิทธิ์อ่าน" ด้วย)</p>
+                            </div>
+                        </div>
+
+                        <!-- Submit Button -->
+                        <div class="flex justify-end pt-6 border-t border-slate-100 dark:border-white/5">
+                            <button type="submit" class="px-6 py-3 bg-emerald-600 hover:bg-emerald-700 active:scale-95 text-white text-xs font-bold rounded-xl shadow-lg transition-all flex items-center gap-1.5">
+                                <i class="fa-solid fa-save"></i> บันทึกข้อมูลตาราง
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        <?php endif; ?>
+
+        <!-- Tab 8 Panel: Manage PDF Documents -->
+        <?php if ($activeTab === 'documents'): 
+            $documentsList = [
+                'handbook' => [
+                    'label' => 'คู่มือนักเรียนและผู้ปกครอง',
+                    'filename' => 'คู่มือนักเรียนและผู้ปกครอง.pdf',
+                    'route' => 'student-handbook',
+                    'desc' => 'แสดงบนหน้า "คู่มือนักเรียน" ในส่วนเมนูคู่มือและระเบียบปฏิบัติ'
+                ],
+                'support_handbook' => [
+                    'label' => 'คู่มือระบบดูแลช่วยเหลือนักเรียน',
+                    'filename' => 'คู่มือระบบดูแลช่วยเหลือนักเรียน.pdf',
+                    'route' => 'student-support-handbook',
+                    'desc' => 'แสดงบนหน้า "คู่มือระบบดูแลช่วยเหลือนักเรียน" ในส่วนเมนูคู่มือและระเบียบปฏิบัติ'
+                ],
+                'discipline' => [
+                    'label' => 'ระเบียบวินัยและความประพฤติ',
+                    'filename' => 'ระเบียบโรงเรียนพิชัย 2568.pdf',
+                    'route' => 'discipline-rules',
+                    'desc' => 'แสดงบนหน้า "ระเบียบวินัยและความประพฤติ" ในส่วนเมนูคู่มือและระเบียบปฏิบัติ'
+                ],
+                'dress' => [
+                    'label' => 'ระเบียบเครื่องแต่งกายและทรงผม',
+                    'filename' => 'ประกาศโรงเรียนพิชัย-ว่าด้วยทรงผม2566_230509_113401.pdf',
+                    'route' => 'dress-rules',
+                    'desc' => 'แสดงบนหน้า "ระเบียบเครื่องแต่งกายและทรงผม" ในส่วนเมนูคู่มือและระเบียบปฏิบัติ'
+                ],
+                'campus' => [
+                    'label' => 'สหวิทยาเขตพระยาพิชัยดาบหัก',
+                    'filename' => 'ประกาศแต่งตั้งคณะกรรมการสหวิทยาเขตพระยาพิชัยดาบหัก.pdf',
+                    'route' => 'campus',
+                    'desc' => 'แสดงบนหน้า "สหวิทยาเขตพระยาพิชัยดาบหัก" ในส่วนเมนูข้อมูลทั่วไปและบริหาร'
+                ],
+                'no_gift_policy' => [
+                    'label' => 'แนวปฏิบัติ Do\'s & Don\'ts และนโยบาย No Gift Policy',
+                    'filename' => 'แนวปฏิบัติ DO\'S & Don\'ts.pdf',
+                    'route' => 'no-gift',
+                    'desc' => 'แสดงบนหน้า "นโยบาย No Gift Policy" และ "แนวปฏิบัติ Do\'s & Don\'ts" ในส่วนเมนูความโปร่งใส'
+                ],
+                'no_gift_announcement' => [
+                    'label' => 'ประกาศเจตนารมณ์ นโยบาย No Gift Policy',
+                    'filename' => 'ประกาศเจตนารมณ์ นโยบาย No Gift Polioy จากการปฏิบัติหน้าที่.pdf',
+                    'route' => 'no-gift',
+                    'desc' => 'แสดงบนหน้า "นโยบาย No Gift Policy" ในส่วนเมนูความโปร่งใส'
+                ]
+            ];
+        ?>
+            <div class="space-y-6 animate-fade-in-up">
+                <div>
+                    <h2 class="text-lg font-bold text-slate-900 dark:text-white">ระบบจัดการและอัปเดตไฟล์คู่มือ/ระเบียบปฏิบัติโรงเรียน (PDF)</h2>
+                    <p class="text-slate-500 dark:text-slate-400 text-xs">คุณสามารถอัปโหลดไฟล์ PDF ใหม่เพื่อแก้ไข/เขียนทับไฟล์เก่าได้โดยตรง ระบบจะจัดการให้อัตโนมัติและลิงก์ของเว็บไซต์หลักจะอัปเดตทันที</p>
+                </div>
+
+                <div class="glass-card rounded-3xl overflow-hidden shadow-xl border border-slate-900/5 dark:border-white/10 bg-white/70 dark:bg-slate-900/70 backdrop-blur-xl">
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse">
+                            <thead>
+                                <tr class="bg-slate-100 dark:bg-slate-950/60 border-b border-slate-200 dark:border-white/10 text-[11px] font-semibold text-slate-600 dark:text-slate-300 tracking-wider">
+                                    <th class="py-4 px-6 w-1/3">หน้าและรายการเอกสาร</th>
+                                    <th class="py-4 px-6 w-1/4">ชื่อไฟล์ปัจจุบัน / ขนาด</th>
+                                    <th class="py-4 px-6 text-center w-32">แก้ไขล่าสุด</th>
+                                    <th class="py-4 px-6 text-center w-64">อัปโหลดอัปเดตไฟล์ใหม่ (.pdf)</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-slate-100 dark:divide-white/5 text-xs text-slate-600 dark:text-slate-300">
+                                <?php foreach ($documentsList as $key => $doc): 
+                                    $filePath = UPLOAD_DIR . $doc['filename'];
+                                    $fileExists = file_exists($filePath);
+                                    $fileSize = $fileExists ? round(filesize($filePath) / (1024 * 1024), 2) . ' MB' : '-';
+                                    $fileTime = $fileExists ? date('d/m/Y H:i', filemtime($filePath)) : 'ไม่มีไฟล์';
+                                ?>
+                                    <tr class="hover:bg-slate-50 dark:hover:bg-white/5 transition-colors">
+                                        <!-- Document Info -->
+                                        <td class="py-5 px-6">
+                                            <h4 class="font-bold text-slate-800 dark:text-white"><?php echo htmlspecialchars($doc['label']); ?></h4>
+                                            <p class="text-[10px] text-slate-450 dark:text-slate-500 mt-1"><?php echo htmlspecialchars($doc['desc']); ?></p>
+                                            <a href="<?php echo BASE_URL . $doc['route']; ?>" target="_blank" class="inline-flex items-center gap-1 text-[9px] text-indigo-500 hover:underline mt-1.5 font-bold">
+                                                <i class="fa-solid fa-external-link text-[8px]"></i> ดูหน้านี้บนเว็บหลัก
+                                            </a>
+                                        </td>
+                                        <!-- Filename / Size -->
+                                        <td class="py-5 px-6 space-y-1">
+                                            <?php if ($fileExists): ?>
+                                                <div class="flex items-center gap-1.5 text-slate-700 dark:text-slate-350">
+                                                    <i class="fa-regular fa-file-pdf text-red-500 text-sm"></i>
+                                                    <span class="font-mono text-[10px] truncate max-w-[200px]" title="<?php echo htmlspecialchars($doc['filename']); ?>"><?php echo htmlspecialchars($doc['filename']); ?></span>
+                                                </div>
+                                                <div class="text-[10px] text-slate-400 dark:text-slate-500">
+                                                    ขนาด: <span class="font-bold font-english"><?php echo $fileSize; ?></span>
+                                                </div>
+                                            <?php else: ?>
+                                                <span class="text-rose-500 font-bold italic">ไม่พบไฟล์ในระบบ</span>
+                                            <?php endif; ?>
+                                        </td>
+                                        <!-- Last Modified -->
+                                        <td class="py-5 px-6 text-center text-slate-500 dark:text-slate-400 font-mono">
+                                            <?php echo $fileTime; ?>
+                                        </td>
+                                        <!-- Upload Form -->
+                                        <td class="py-5 px-6">
+                                            <form action="<?php echo BASE_URL; ?>admin/documents/upload" method="POST" enctype="multipart/form-data" class="flex items-center gap-2">
+                                                <input type="hidden" name="document_key" value="<?php echo htmlspecialchars($key); ?>">
+                                                <div class="relative flex-grow">
+                                                    <input type="file" name="pdf_file" accept=".pdf" required class="block w-full text-[10px] text-slate-500 dark:text-slate-450 file:mr-2 file:py-1 file:px-2.5 file:rounded-lg file:border-0 file:text-[10px] file:font-semibold file:bg-indigo-500/10 file:text-indigo-600 dark:file:text-indigo-400 hover:file:bg-indigo-500/20 cursor-pointer">
+                                                </div>
+                                                <button type="submit" class="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg font-bold text-[10px] shadow-sm hover:shadow active:scale-95 transition-all flex items-center gap-1 shrink-0">
+                                                    <i class="fa-solid fa-cloud-arrow-up"></i> อัปโหลด
+                                                </button>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                <?php endforeach; ?>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        <?php endif; ?>
+
+        <!-- Tab 9 Panel: Manage Feedback Link -->
+        <?php if ($activeTab === 'feedback'): 
+            $settingModel = new Setting();
+            $settings = $settingModel->get_all_settings();
+            $feedbackLink = $settings['feedback_form_url'] ?? 'https://docs.google.com/forms/d/e/1FAIpQLSdfj2hYSPIH6DohM5-IFz0gw_tqrAPDNRYeiMpuLqWuvaDGIQ/viewform?embedded=true';
+        ?>
+            <div class="space-y-6 animate-fade-in-up">
+                <!-- Action Header -->
+                <div>
+                    <h2 class="text-lg font-bold text-slate-900 dark:text-white">จัดการลิงก์ช่องทางรับฟังความคิดเห็น</h2>
+                    <p class="text-slate-500 dark:text-slate-400 text-xs">ระบุลิงก์ Google Form หรือลิงก์ช่องทางอื่นสำหรับการรับฟังความคิดเห็นของบุคคลภายนอกและบุคลากร</p>
+                </div>
+
+                <div class="glass-card rounded-3xl p-6 md:p-8 shadow-xl max-w-4xl border border-slate-900/5 dark:border-white/10 bg-white/70 dark:bg-slate-900/70 backdrop-blur-xl">
+                    <form action="<?php echo BASE_URL; ?>admin/settings/feedback" method="POST" class="space-y-6">
+                        <div class="space-y-6">
+                            <div class="space-y-2">
+                                <label class="text-xs font-semibold text-slate-700 dark:text-slate-300 flex items-center gap-1.5">
+                                    <i class="fa-solid fa-comments text-indigo-500 text-sm"></i>
+                                    <span>ลิงก์ Google Form สำหรับรับฟังความคิดเห็น</span>
+                                </label>
+                                <input type="url" name="feedback_form_url" value="<?php echo htmlspecialchars($feedbackLink); ?>" required class="w-full glass-input rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all" placeholder="https://docs.google.com/forms/d/e/.../viewform?embedded=true">
+                                <p class="text-[10px] text-slate-400 dark:text-slate-500 leading-normal">
+                                    วางลิงก์ Google Form ของคุณ (แนะนำให้ใช้ลิงก์เวอร์ชันที่มี `?embedded=true` ท้ายลิงก์เพื่อให้แสดงผลในกรอบเว็บไซด์ได้อย่างสวยงาม)</p>
+                            </div>
+                        </div>
+
+                        <!-- Submit Button -->
+                        <div class="flex justify-end pt-6 border-t border-slate-100 dark:border-white/5">
+                            <button type="submit" class="px-6 py-3 bg-emerald-600 hover:bg-emerald-700 active:scale-95 text-white text-xs font-bold rounded-xl shadow-lg transition-all flex items-center gap-1.5">
+                                <i class="fa-solid fa-save"></i> บันทึกข้อมูลลิงก์
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        <?php endif; ?>
+
+        <!-- Tab 10 Panel: Manage Complaints Link -->
+        <?php if ($activeTab === 'complaints'): 
+            $settingModel = new Setting();
+            $settings = $settingModel->get_all_settings();
+            $complaintsLink = $settings['complaints_form_url'] ?? 'https://docs.google.com/forms/d/e/1FAIpQLSdXHcrRSeXIou3Ym2De6fP6BVqArEjpSkE6Qay6r8R6RaJLyw/viewform?embedded=true&wmode=transparent';
+        ?>
+            <div class="space-y-6 animate-fade-in-up">
+                <!-- Action Header -->
+                <div>
+                    <h2 class="text-lg font-bold text-slate-900 dark:text-white">จัดการลิงก์ช่องทางรับเรื่องร้องเรียน</h2>
+                    <p class="text-slate-500 dark:text-slate-400 text-xs">ระบุลิงก์ Google Form หรือลิงก์ช่องทางอื่นสำหรับการแจ้งเบาะแส/เรื่องร้องเรียนทุจริตและประพฤติมิชอบ</p>
+                </div>
+
+                <div class="glass-card rounded-3xl p-6 md:p-8 shadow-xl max-w-4xl border border-slate-900/5 dark:border-white/10 bg-white/70 dark:bg-slate-900/70 backdrop-blur-xl">
+                    <form action="<?php echo BASE_URL; ?>admin/settings/complaints" method="POST" class="space-y-6">
+                        <div class="space-y-6">
+                            <div class="space-y-2">
+                                <label class="text-xs font-semibold text-slate-700 dark:text-slate-300 flex items-center gap-1.5">
+                                    <i class="fa-solid fa-circle-exclamation text-red-500 text-sm"></i>
+                                    <span>ลิงก์ Google Form สำหรับรับเรื่องร้องเรียน</span>
+                                </label>
+                                <input type="url" name="complaints_form_url" value="<?php echo htmlspecialchars($complaintsLink); ?>" required class="w-full glass-input rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all" placeholder="https://docs.google.com/forms/d/e/.../viewform?embedded=true">
+                                <p class="text-[10px] text-slate-400 dark:text-slate-500 leading-normal">
+                                    วางลิงก์ Google Form ของคุณ (แนะนำให้ใช้ลิงก์เวอร์ชันที่มี `?embedded=true` ท้ายลิงก์เพื่อให้แสดงผลในกรอบเว็บไซด์ได้อย่างสวยงาม)</p>
+                            </div>
+                        </div>
+
+                        <!-- Submit Button -->
+                        <div class="flex justify-end pt-6 border-t border-slate-100 dark:border-white/5">
+                            <button type="submit" class="px-6 py-3 bg-emerald-600 hover:bg-emerald-700 active:scale-95 text-white text-xs font-bold rounded-xl shadow-lg transition-all flex items-center gap-1.5">
+                                <i class="fa-solid fa-save"></i> บันทึกข้อมูลลิงก์
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        <?php endif; ?>
+            </div> <!-- End of lg:col-span-9 -->
+        </div> <!-- End of grid layout -->
     </main>
 
     <!-- FOOTER -->

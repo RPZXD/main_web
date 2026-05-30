@@ -43,18 +43,26 @@ $requestUri = $_SERVER['REQUEST_URI'] ?? '/';
 $parsedUrl = parse_url($requestUri);
 $path = $parsedUrl['path'] ?? '/';
 
-// Trim down subdirectories in XAMPP (e.g. /main_web/public)
-$scriptDir = str_replace('\\', '/', dirname($_SERVER['SCRIPT_NAME']));
-if (substr($scriptDir, -1) !== '/') {
-    $scriptDir .= '/';
+// Get the base path from BASE_URL (e.g., '/main_web/')
+$basePath = parse_url(BASE_URL, PHP_URL_PATH) ?? '/';
+if (substr($basePath, -1) !== '/') {
+    $basePath .= '/';
 }
 
 // Compute the clean MVC Route
 $route = '/';
-if (strpos($path, $scriptDir) === 0) {
-    $route = '/' . substr($path, strlen($scriptDir));
+if (strpos($path, $basePath) === 0) {
+    $route = '/' . substr($path, strlen($basePath));
 } else {
     $route = $path;
+}
+$route = '/' . trim($route, '/');
+
+// Strip 'public/' from the route for backward compatibility
+if (strpos($route, '/public/') === 0) {
+    $route = '/' . substr($route, 8);
+} elseif ($route === '/public') {
+    $route = '/';
 }
 $route = '/' . trim($route, '/');
 
@@ -63,9 +71,30 @@ $routes = [
     '/' => ['NewsController', 'index'],
     '/news' => ['NewsController', 'archive'],
     '/news/detail' => ['NewsController', 'detail'],
+    '/search' => ['SearchController', 'index'],
+    '/journal' => ['JournalController', 'index'],
+    '/journal/detail' => ['JournalController', 'detail'],
     '/about' => ['AboutController', 'index'],
+    '/info' => ['InfoController', 'index'],
+    '/schoolboard' => ['AboutController', 'schoolboard'],
+    '/tammanoon' => ['AboutController', 'tammanoon'],
     '/contact' => ['AboutController', 'contact'],
     '/ita' => ['ItaController', 'index'],
+    '/student-schedule' => ['ScheduleController', 'student'],
+    '/teacher-schedule' => ['ScheduleController', 'teacher'],
+    '/student-handbook' => ['RulesController', 'studentHandbook'],
+    '/student-support-handbook' => ['RulesController', 'studentSupportHandbook'],
+    '/discipline-rules' => ['RulesController', 'disciplineRules'],
+    '/dress-rules' => ['RulesController', 'dressRules'],
+    '/campus' => ['RulesController', 'campus'],
+    '/student-list' => ['StudentController', 'index'],
+    '/student-list/ajax' => ['StudentController', 'ajaxGetStudents'],
+    '/school-staff' => ['StaffController', 'index'],
+    '/attendance-stats' => ['AttendanceController', 'index'],
+    '/feedback' => ['FeedbackController', 'index'],
+    '/complaints' => ['ComplaintsController', 'index'],
+    '/no-gift' => ['PolicyController', 'noGift'],
+    '/dos-donts' => ['PolicyController', 'dosDonts'],
     '/login' => ['UserController', 'login'],
     '/logout' => ['UserController', 'logout'],
     '/admin' => ['UserController', 'dashboard'],
@@ -75,8 +104,13 @@ $routes = [
     '/admin/ita/update' => ['ItaController', 'update'],
     '/admin/ita/upload' => ['ItaController', 'upload'],
     '/admin/about/update' => ['AboutController', 'update'],
+    '/admin/statistics/update' => ['InfoController', 'update'],
     '/admin/settings' => ['AdminSettingController', 'index'],
     '/admin/settings/update' => ['AdminSettingController', 'update'],
+    '/admin/settings/schedules' => ['AdminSettingController', 'updateSchedules'],
+    '/admin/settings/feedback' => ['AdminSettingController', 'updateFeedback'],
+    '/admin/settings/complaints' => ['AdminSettingController', 'updateComplaints'],
+    '/admin/documents/upload' => ['AdminSettingController', 'uploadDocument'],
     '/admin/hero/create' => ['HeroController', 'create'],
     '/admin/hero/edit' => ['HeroController', 'edit'],
     '/admin/hero/delete' => ['HeroController', 'delete'],

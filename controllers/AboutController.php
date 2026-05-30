@@ -44,6 +44,28 @@ class AboutController {
     }
 
     /**
+     * Renders public School Board Committee page view
+     */
+    public function schoolboard() {
+        $title = __('info_board') . " | " . SCHOOL_NAME;
+
+        require ROOT_PATH . 'views/layouts/header.php';
+        require ROOT_PATH . 'views/frontend/schoolboard.php';
+        require ROOT_PATH . 'views/layouts/footer.php';
+    }
+
+    /**
+     * Renders public School Charter page view
+     */
+    public function tammanoon() {
+        $title = __('info_charter') . " | " . SCHOOL_NAME;
+
+        require ROOT_PATH . 'views/layouts/header.php';
+        require ROOT_PATH . 'views/frontend/tammanoon.php';
+        require ROOT_PATH . 'views/layouts/footer.php';
+    }
+
+    /**
      * Handles administrative post requests to update school info sections
      */
     public function update() {

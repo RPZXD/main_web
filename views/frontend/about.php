@@ -108,16 +108,97 @@ $contentField = 'content_' . $lang;
                     <span><?php echo __('executives'); ?></span>
                 </h3>
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-y-20 gap-x-6 pt-20 pb-10">
-                    <?php foreach ($executives as $exec): 
-                        $name = ($lang === 'th') ? $exec['name_th'] : $exec['name_en'];
-                        $position = ($lang === 'th') ? $exec['position_th'] : $exec['position_en'];
+                    <?php 
+                    // Mapping configuration for executive names to English
+                    $nameMap = [
+                        'นางสาวรสสุคนธ์ อินชัยเขา' => [
+                            'th' => 'นางสาวรสสุคนธ์ อินชัยเขา',
+                            'en' => 'Miss Rossukhon Inchaikhao'
+                        ],
+                        'นางนภาศรี สว่างแสง' => [
+                            'th' => 'นางนภาศรี สว่างแสง',
+                            'en' => 'Mrs. Naphasri Sawangsang'
+                        ],
+                        'นางดวงหทัย แก้วดำรงค์' => [
+                            'th' => 'นางดวงหทัย แก้วดำรงค์',
+                            'en' => 'Mrs. Duanghathai Kaewdamrong'
+                        ],
+                        'นางอานุชรา ใจปัญญา' => [
+                            'th' => 'นางอานุชรา ใจปัญญา',
+                            'en' => 'Mrs. Anuchara Jaipanya'
+                        ],
+                        'นางสาวขวัญทอง ฉ่ำเฉื่อย' => [
+                            'th' => 'นางสาวขวัญทอง ฉ่ำเฉื่อย',
+                            'en' => 'Miss Khwanthong Chamchuay'
+                        ]
+                    ];
+
+                    // Mapping configuration for executive positions
+                    $positionMap = [
+                        'ผู้อำนวยการ' => [
+                            'th' => 'ผู้อำนวยการโรงเรียน',
+                            'en' => 'School Director'
+                        ],
+                        'รองผู้อำนวยการ' => [
+                            'th' => 'รองผู้อำนวยการโรงเรียน',
+                            'en' => 'Deputy School Director'
+                        ]
+                    ];
+
+                    // Mapping configuration for academic ranks
+                    $academicRanks = [
+                        'th' => [
+                            1 => 'ชำนาญการ',
+                            2 => 'ชำนาญการพิเศษ',
+                            3 => 'เชี่ยวชาญ',
+                            4 => 'เชี่ยวชาญพิเศษ'
+                        ],
+                        'en' => [
+                            1 => 'Professional Level',
+                            2 => 'Senior Professional Level',
+                            3 => 'Expert Level',
+                            4 => 'Special Expert Level'
+                        ]
+                    ];
+
+                    foreach ($executives as $exec): 
+                        // Clean double spacing or extra whitespace in database name
+                        $cleanDbName = preg_replace('/\s+/', ' ', trim($exec['Teach_name']));
+                        
+                        // Select localized name based on mapping or fallback
+                        if (isset($nameMap[$cleanDbName][$lang])) {
+                            $name = $nameMap[$cleanDbName][$lang];
+                        } else {
+                            $name = $cleanDbName;
+                        }
+
+                        // Select localized position based on mapping or fallback
+                        $dbPosition = trim($exec['Teach_major']);
+                        if (isset($positionMap[$dbPosition][$lang])) {
+                            $position = $positionMap[$dbPosition][$lang];
+                        } else {
+                            $position = $dbPosition;
+                        }
+
+                        // Get academic rank name if valid
+                        $rank = '';
+                        $rankId = isset($exec['Teach_Academic']) ? intval($exec['Teach_Academic']) : 0;
+                        if ($rankId > 0 && isset($academicRanks[$lang][$rankId])) {
+                            $rank = $academicRanks[$lang][$rankId];
+                        }
+
+                        // Build phototeach URL or fallback
+                        $photoUrl = '';
+                        if (!empty($exec['Teach_photo'])) {
+                            $photoUrl = 'https://std.phichai.ac.th/teacher/uploads/phototeach/' . $exec['Teach_photo'];
+                        }
                     ?>
                         <div class="relative glass-card border border-amber-100/70 dark:border-white/5 p-6 pt-16 rounded-[2rem] shadow-xl hover:shadow-2xl flex flex-col items-center text-center transition-all duration-300 hover:scale-[1.03]">
                             <!-- Floating Executive Photo Frame -->
                             <div class="absolute -top-14 left-1/2 -translate-x-1/2 w-28 h-28 rounded-full bg-gradient-to-tr from-amber-300 to-amber-500 p-[3px] shadow-lg">
-                                <div class="w-full h-full rounded-full bg-amber-50/70 dark:bg-slate-900 border-4 border-white dark:border-slate-950 overflow-hidden flex items-center justify-center">
-                                    <?php if (!empty($exec['image_path'])): ?>
-                                        <img src="<?php echo htmlspecialchars($exec['image_path']); ?>" alt="<?php echo htmlspecialchars($name); ?>" class="w-full h-full object-cover">
+                                <div class="w-full h-full rounded-full bg-amber-100 dark:bg-amber-950/60 border-4 border-white overflow-hidden flex items-center justify-center">
+                                    <?php if (!empty($photoUrl)): ?>
+                                        <img src="<?php echo htmlspecialchars($photoUrl); ?>" alt="<?php echo htmlspecialchars($name); ?>" class="w-full h-full object-cover">
                                     <?php else: ?>
                                         <i class="fa-solid fa-user text-amber-700/80 dark:text-amber-500 text-5xl translate-y-2 shrink-0"></i>
                                     <?php endif; ?>
@@ -129,22 +210,29 @@ $contentField = 'content_' . $lang;
                                 <h4 class="font-bold text-slate-900 dark:text-white text-sm sm:text-base tracking-tight"><?php echo htmlspecialchars($name); ?></h4>
                                 <p class="text-[11px] text-indigo-600 dark:text-indigo-400 font-semibold mt-1.5 leading-normal max-w-[200px]"><?php echo htmlspecialchars($position); ?></p>
                                 
-                                <?php if (!empty($exec['academic_rank'])): ?>
+                                <?php if (!empty($rank)): ?>
                                     <span class="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-amber-500/90 text-white border border-amber-600/30 text-[9px] font-bold mt-3 shadow-sm shadow-amber-500/10">
                                         <i class="fa-solid fa-circle-check text-[9px]"></i>
-                                        <?php echo htmlspecialchars($exec['academic_rank']); ?>
+                                        <?php echo htmlspecialchars($rank); ?>
                                     </span>
                                 <?php endif; ?>
 
                                 <!-- Dotted divider line -->
                                 <div class="border-t border-dashed border-slate-200 dark:border-white/10 w-full my-4.5"></div>
 
-                                <!-- Email Link -->
-                                <?php if (!empty($exec['email'])): ?>
-                                    <a href="mailto:<?php echo htmlspecialchars($exec['email']); ?>" class="inline-flex items-center gap-1.5 text-[10px] text-slate-500 hover:text-indigo-600 dark:text-slate-400 dark:hover:text-white transition-colors font-medium">
+                                <!-- Contact Info -->
+                                <?php if (!empty($exec['Teach_email'])): ?>
+                                    <a href="mailto:<?php echo htmlspecialchars($exec['Teach_email']); ?>" class="inline-flex items-center gap-1.5 text-[10px] text-slate-500 hover:text-indigo-600 dark:text-slate-400 dark:hover:text-white transition-colors font-medium">
                                         <i class="fa-solid fa-envelope text-indigo-500 dark:text-indigo-400 text-[11px]"></i>
-                                        <span><?php echo htmlspecialchars($exec['email']); ?></span>
+                                        <span><?php echo htmlspecialchars($exec['Teach_email']); ?></span>
                                     </a>
+                                <?php elseif (!empty($exec['Teach_phone'])): ?>
+                                    <a href="tel:<?php echo htmlspecialchars($exec['Teach_phone']); ?>" class="inline-flex items-center gap-1.5 text-[10px] text-slate-500 hover:text-indigo-600 dark:text-slate-400 dark:hover:text-white transition-colors font-medium">
+                                        <i class="fa-solid fa-phone text-indigo-500 dark:text-indigo-400 text-[11px]"></i>
+                                        <span><?php echo htmlspecialchars($exec['Teach_phone']); ?></span>
+                                    </a>
+                                <?php else: ?>
+                                    <span class="text-[10px] text-slate-400 dark:text-slate-600 font-medium">-</span>
                                 <?php endif; ?>
                             </div>
                         </div>

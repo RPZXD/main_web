@@ -1,0 +1,9 @@
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+
+    # Rewrite empty request (root of main_web) to public/
+    RewriteRule ^$ public/ [L]
+
+    # Rewrite all other requests to public/ (unless they already start with public/)
+    RewriteRule ^((?!public/).*)$ public/$1 [L]
+</IfModule>

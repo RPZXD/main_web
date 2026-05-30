@@ -103,6 +103,7 @@ $routes = [
     '/admin/news/delete' => ['NewsController', 'delete'],
     '/admin/ita/update' => ['ItaController', 'update'],
     '/admin/ita/upload' => ['ItaController', 'upload'],
+    '/admin/ita/delete' => ['ItaController', 'delete'],
     '/admin/about/update' => ['AboutController', 'update'],
     '/admin/statistics/update' => ['InfoController', 'update'],
     '/admin/settings' => ['AdminSettingController', 'index'],

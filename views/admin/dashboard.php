@@ -396,9 +396,14 @@
                                         </td>
                                         <!-- Action -->
                                         <td class="py-3.5 px-6 text-center">
-                                            <button onclick="openEditItaModal(<?php echo htmlspecialchars(json_encode($item)); ?>)" class="p-2 bg-indigo-600/10 hover:bg-indigo-600/30 text-indigo-600 dark:text-indigo-400 border border-indigo-500/20 rounded-xl hover:text-indigo-700 dark:hover:text-indigo-300 transition-all duration-200">
-                                                <i class="fa-solid fa-edit"></i>
-                                            </button>
+                                            <div class="flex items-center justify-center gap-2">
+                                                <button onclick="openEditItaModal(<?php echo htmlspecialchars(json_encode($item)); ?>)" class="p-2 bg-indigo-600/10 hover:bg-indigo-600/30 text-indigo-600 dark:text-indigo-400 border border-indigo-500/20 rounded-xl hover:text-indigo-700 dark:hover:text-indigo-300 transition-all duration-200" title="แก้ไข">
+                                                    <i class="fa-solid fa-edit"></i>
+                                                </button>
+                                                <a href="<?php echo BASE_URL; ?>admin/ita/delete?code=<?php echo $item['code']; ?>" onclick="return confirm('คุณต้องการลบข้อมูลทั้งหมดของตัวชี้วัด <?php echo $item['code']; ?> ใช่หรือไม่?')" class="p-2 bg-red-600/10 hover:bg-red-600/30 text-red-600 dark:text-red-400 border border-red-500/20 rounded-xl hover:text-red-700 dark:hover:text-red-300 transition-all duration-200" title="ลบข้อมูล">
+                                                    <i class="fa-solid fa-trash"></i>
+                                                </a>
+                                            </div>
                                         </td>
                                     </tr>
                                 <?php endforeach; ?>

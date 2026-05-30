@@ -68,8 +68,8 @@ class SearchController {
             try {
                 $journalDb = new PDO(
                     "mysql:host=" . (getenv('DB_HOST') ?: '127.0.0.1') . ";dbname=phichaia_general;charset=utf8mb4",
-                    getenv('DB_USER') ?: 'root',
-                    getenv('DB_PASSWORD') !== false ? getenv('DB_PASSWORD') : '',
+                    getenv('DB_USER') ?: 'phichaia_stdcare',
+                    getenv('DB_PASSWORD') !== false ? getenv('DB_PASSWORD') : '48dv_m64N',
                     [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION, PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC]
                 );
                 $stmt = $journalDb->prepare("SELECT id, title, detail, news_date, images, COALESCE(view_count, 0) as view_count 

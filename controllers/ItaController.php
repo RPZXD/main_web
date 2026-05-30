@@ -108,6 +108,60 @@ class ItaController {
     }
 
     /**
+     * Resets/clears the content of an ITA indicator
+     */
+    public function delete() {
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
+        
+        // Guard access
+        if (!isset($_SESSION['user_id'])) {
+            header('Location: ' . BASE_URL . 'login');
+            exit();
+        }
+
+        $code = trim($_GET['code'] ?? '');
+        if (empty($code)) {
+            $_SESSION['error'] = 'ไม่ได้ระบุรหัสตัวชี้วัด';
+            header('Location: ' . BASE_URL . 'admin?tab=ita');
+            exit();
+        }
+
+        $currentItem = $this->itaModel->getByCode($code);
+        if (!$currentItem) {
+            $_SESSION['error'] = 'ไม่พบรหัสตัวชี้วัดดังกล่าว';
+            header('Location: ' . BASE_URL . 'admin?tab=ita');
+            exit();
+        }
+
+        // Delete physical file if exists
+        if (!empty($currentItem['file_path'])) {
+            $oldPath = str_replace(UPLOAD_URL, UPLOAD_DIR, $currentItem['file_path']);
+            if (file_exists($oldPath)) {
+                @unlink($oldPath);
+            }
+        }
+
+        // Clear database fields
+        $success = $this->itaModel->update($code, [
+            'name' => $currentItem['name'],
+            'link_url' => '',
+            'file_path' => null,
+            'status' => 'draft'
+        ]);
+
+        if ($success) {
+            $_SESSION['success'] = 'ลบข้อมูลของตัวชี้วัด ' . $code . ' เรียบร้อยแล้ว';
+        } else {
+            $_SESSION['error'] = 'เกิดข้อผิดพลาดในการลบข้อมูลตัวชี้วัด';
+        }
+
+        header('Location: ' . BASE_URL . 'admin?tab=ita');
+        exit();
+    }
+
+    /**
      * Helper Method: Handles PDF/Document uploads securely
      * @param array $file $_FILES element
      * @param string $code indicator code (e.g. O1, O25)

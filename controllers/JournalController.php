@@ -8,8 +8,8 @@ class JournalController {
     public function __construct() {
         try {
             $host = getenv('DB_HOST') ?: '127.0.0.1';
-            $dbUser = getenv('DB_USER') ?: 'root';
-            $dbPass = getenv('DB_PASSWORD') !== false ? getenv('DB_PASSWORD') : '';
+            $dbUser = getenv('DB_USER') ?: 'phichaia_stdcare';
+            $dbPass = getenv('DB_PASSWORD') !== false ? getenv('DB_PASSWORD') : '48dv_m64N';
 
             $options = [
                 PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,

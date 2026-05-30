@@ -407,7 +407,7 @@
             <div class="lg:col-span-4 space-y-4">
                 <span class="text-[10px] font-bold text-indigo-500 dark:text-indigo-400 uppercase tracking-widest bg-indigo-500/10 px-3 py-1 rounded-md border border-indigo-500/20 inline-block">ITA ONLINE PORTAL</span>
                 <h3 class="text-xl font-extrabold text-slate-900 dark:text-white leading-tight">ระบบเผยแพร่ข้อมูลประเมินคุณธรรมและความโปร่งใส</h3>
-                <p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">ร่วมเป็นส่วนหนึ่งของการติดตามตรวจสอบการดำเนินงานอย่างซื่อสัตย์สุจริตตามหลักธรรมาภิบาล ผ่านดัชนีชี้วัด O1 - O43</p>
+                <p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">ร่วมเป็นส่วนหนึ่งของการติดตามตรวจสอบการดำเนินงานอย่างซื่อสัตย์สุจริตตามหลักธรรมาภิบาล ผ่านดัชนีชี้วัดคุณธรรมและความโปร่งใส (ITA)</p>
                 <div class="pt-2">
                     <a href="<?php echo BASE_URL; ?>ita" class="inline-flex items-center gap-1.5 px-4.5 py-2.5 bg-indigo-600 hover:bg-indigo-700 active:scale-95 text-white rounded-xl text-xs font-bold shadow-md hover:shadow-indigo-500/20 transition-all duration-200">
                         <i class="fa-solid fa-chart-line"></i> เข้าสู่หน้า ITA เต็มรูปแบบ

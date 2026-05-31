@@ -36,7 +36,16 @@ class News {
 
             $stmt = $this->db->prepare($sql);
             $stmt->execute($params);
-            return $stmt->fetchAll();
+            $rows = $stmt->fetchAll();
+            foreach ($rows as &$row) {
+                if (isset($row['image_url'])) {
+                    $row['image_url'] = clean_db_url($row['image_url']);
+                }
+                if (isset($row['attachment_pdf'])) {
+                    $row['attachment_pdf'] = clean_db_url($row['attachment_pdf']);
+                }
+            }
+            return $rows;
         } catch (PDOException $e) {
             error_log("News database query error: " . $e->getMessage());
             return [];
@@ -51,10 +60,19 @@ class News {
     public function getById($id) {
         try {
             $stmt = $this->db->prepare("SELECT n.*, u.fullname as author_name FROM news n 
-                                        LEFT JOIN users u ON n.created_by = u.id 
-                                        WHERE n.id = :id LIMIT 1");
+                                         LEFT JOIN users u ON n.created_by = u.id 
+                                         WHERE n.id = :id LIMIT 1");
             $stmt->execute(['id' => $id]);
-            return $stmt->fetch();
+            $row = $stmt->fetch();
+            if ($row) {
+                if (isset($row['image_url'])) {
+                    $row['image_url'] = clean_db_url($row['image_url']);
+                }
+                if (isset($row['attachment_pdf'])) {
+                    $row['attachment_pdf'] = clean_db_url($row['attachment_pdf']);
+                }
+            }
+            return $row;
         } catch (PDOException $e) {
             error_log("News details query error: " . $e->getMessage());
             return false;

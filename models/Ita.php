@@ -31,7 +31,13 @@ class Ita {
             
             $stmt = $this->db->prepare($sql);
             $stmt->execute($params);
-            return $stmt->fetchAll();
+            $rows = $stmt->fetchAll();
+            foreach ($rows as &$row) {
+                if (isset($row['file_path'])) {
+                    $row['file_path'] = clean_db_url($row['file_path']);
+                }
+            }
+            return $rows;
         } catch (PDOException $e) {
             error_log("ITA items database query error: " . $e->getMessage());
             return [];
@@ -47,7 +53,11 @@ class Ita {
         try {
             $stmt = $this->db->prepare("SELECT * FROM ita_items WHERE code = :code LIMIT 1");
             $stmt->execute(['code' => $code]);
-            return $stmt->fetch();
+            $row = $stmt->fetch();
+            if ($row && isset($row['file_path'])) {
+                $row['file_path'] = clean_db_url($row['file_path']);
+            }
+            return $row;
         } catch (PDOException $e) {
             error_log("ITA item by code query error: " . $e->getMessage());
             return false;

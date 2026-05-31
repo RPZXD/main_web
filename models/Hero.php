@@ -26,7 +26,13 @@ class Hero {
             
             $stmt = $this->db->prepare($sql);
             $stmt->execute();
-            return $stmt->fetchAll();
+            $rows = $stmt->fetchAll();
+            foreach ($rows as &$row) {
+                if (isset($row['image_url'])) {
+                    $row['image_url'] = clean_db_url($row['image_url']);
+                }
+            }
+            return $rows;
         } catch (PDOException $e) {
             error_log("Hero database query error: " . $e->getMessage());
             return [];
@@ -42,7 +48,11 @@ class Hero {
         try {
             $stmt = $this->db->prepare("SELECT * FROM hero_slides WHERE id = :id LIMIT 1");
             $stmt->execute(['id' => $id]);
-            return $stmt->fetch();
+            $row = $stmt->fetch();
+            if ($row && isset($row['image_url'])) {
+                $row['image_url'] = clean_db_url($row['image_url']);
+            }
+            return $row;
         } catch (PDOException $e) {
             error_log("Hero details query error: " . $e->getMessage());
             return false;

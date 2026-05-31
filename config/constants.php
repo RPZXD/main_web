@@ -30,3 +30,16 @@ define('ROOT_PATH', dirname(__DIR__) . '/');
 define('UPLOAD_DIR', ROOT_PATH . 'public/uploads/');
 define('ASSETS_URL', BASE_URL . 'assets/');
 define('UPLOAD_URL', BASE_URL . 'uploads/');
+
+/**
+ * Resolves local localhost URLs saved in DB to current active BASE_URL dynamically
+ */
+function clean_db_url($url) {
+    if (empty($url)) return $url;
+    $pos = strpos($url, '/uploads/');
+    if ($pos !== false) {
+        return BASE_URL . substr($url, $pos + 1);
+    }
+    return $url;
+}
+
